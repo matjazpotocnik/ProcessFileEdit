@@ -1,0 +1,22 @@
+/**
+ * This optional CSS file is only loaded when the ProcessHello module is run
+ *
+ * Remove it if you have no CSS styles to add.
+ *
+ */
+
+ .php-file-tree .pft-directory:before {
+	 font-family: FontAwesome;
+     content: '\f07b';
+	 padding-right: 5px;
+ }
+
+ .php-file-tree .pft-file:before {
+	font-family: FontAwesome;
+ 	content: '\f0f6';
+ 	padding-right: 5px;
+}
+
+ul ul {
+	margin-left: 15px;
+}
