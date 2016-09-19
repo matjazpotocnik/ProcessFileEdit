@@ -85,7 +85,7 @@ class ProcessFileEdit extends Process {
 		$extensions = explode(',',$this->extensionsFilter);
 		$out .= $this->php_file_tree($this->dirPath, "[link]", $extensions);
 		$out .= "</div>";
-		if (isset($_POST['saveFile']))
+		if ($this->input->post->saveFile)
 		{
 			$openFile = fopen($file, "a");
 			ftruncate($openFile, 0);
