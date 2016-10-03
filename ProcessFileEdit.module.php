@@ -3,13 +3,13 @@
 /**
  * File Editor Module
  *
- * A module for editing file in the admin area.
+ * A module for editing files in the admin area.
  *
- * Copyright 2016 by fbg
+ * @author Florea Banus George
  *
  * ProcessWire 3.x
  * Copyright (C) 2014 by Ryan Cramer
- * Licensed under GNU/GPL v2, see LICENSE.TXT
+ * Licensed under GNU/GPL v2
  *
  * http://processwire.com
  *
@@ -17,49 +17,36 @@
 
 class ProcessFileEdit extends Process {
 
-	/**
-	 * This is an optional initialization function called before any execute functions.
-	 *
-	 * If you don't need to do any initialization common to every execution of this module,
-	 * you can simply remove this init() method.
-	 *
-	 */
-	public function init() {
-		parent::init(); // always remember to call the parent init
-	}
-
-	/**
-	 * This function is executed when a page with your Process assigned is accessed.
- 	 *
-	 * This can be seen as your main or index function. You'll probably want to replace
-	 * everything in this function.
-	 *
-	 */
 	public function ___execute() {
-
-		// greetingType and greeting are automatically populated to this module
-		// and they were defined in ProcessHello.config.php
-
 		$moduleRoot = $this->config->urls->siteModules . "ProcessFileEdit";
-		$newfile    = $this->config->paths->site . $this->input->get->path;
-		$file       = ($this->input->get->path) ? $newfile : $this->defaultFile;
-		$fContent   = file_get_contents($file);
+		$newfile    = $this->dirPath . $this->input->get->path;
+		$file       = ($this->input->get->path) ? $newfile : $this->dirPath . $this->defaultFile;
+		$fileHandle = fopen($file, "r");
 		$pathinfo   = pathinfo($file);
 		$ext        = $pathinfo["extension"];
 
-		if($ext == 'php')      { $mode = "application/x-httpd-php"; }
-		else if($ext == 'css') { $mode = "text/css";                }
-		else                   { $mode = "text/javascript";         }
+		if($ext == 'php' || $ext == 'module') { $mode = "application/x-httpd-php"; }
+		else if($ext == 'js')   { $mode = "text/javascript"; }
+		else if($ext == 'html') { $mode = "text/html";  }
+		else if($ext == 'css')  { $mode = "text/css";   }
+		else                    { $mode = "text/plain"; }
 
-		$out  = "";
+		$editedFile = $this->input->get->path ? "<strong>Editing</strong> <em>{$this->input->get->path}</em>" : "<strong>Editing</strong> <em>{$this->defaultFile}</em>";
+		$out  = "<div class='fe-editor'>{$editedFile}<hr>";
 		$out .= "<link href='{$moduleRoot}/codemirror/lib/codemirror.css' rel='stylesheet' type='text/css'>";
-		$out .= "<link href='{$moduleRoot}/phpFileTree/styles/default/default.css' rel='stylesheet' type='text/css'>";
-		$out .= "<div style='float:left;'><form method='post'>";
-		$out .= "<textarea rows='10' cols='60' name='file_edit' class='cm' style='display: none;'>$fContent</textarea><br>";
+		$out .= "<form method='post'>";
+		$out .= "<textarea rows='10' cols='60' name='file_edit' class='cm' style='display: none;'>";
+		$out .= htmlspecialchars(fread($fileHandle, filesize($file)));
+		$out .= "</textarea><br>";
 		$out .= "<input type='submit' name='saveFile' value='Save'>";
 		$out .= "</form></div>";
+
+		$out .= "<div class='fe-file-tree'>";
+		$extensions = explode(',',$this->extensionsFilter);
+		$out .= $this->php_file_tree($this->dirPath, "[link]", $extensions);
+		$out .= "</div>";
+
 		$out .= "
-			<script src='{$moduleRoot}/phpFileTree/php_file_tree_jquery.js'></script>
 			<script src='{$moduleRoot}/codemirror/lib/codemirror.js'></script>
 			<script src='{$moduleRoot}/codemirror/mode/php/php.js'></script>
 			<script src='{$moduleRoot}/codemirror/mode/xml/xml.js'></script>
@@ -72,57 +59,31 @@ class ProcessFileEdit extends Process {
 			 	var code = $('.cm')[0];
 			 	var editor = CodeMirror.fromTextArea(code, {
 			 		lineNumbers: true,
-			 		mode: '$mode',
+			 		mode: '{$mode}',
 			 		indentUnit: 4,
 			 		indentWithTabs: true,
 			 	});
-			 	editor.setSize(960, 500);
 			 });
 			</script>
+			<style>
+			.CodeMirror{
+				height: {$this->editorHeight};
+			}
+			</style>
 		";
-
-		$out .= "<div style='float:left;margin-left:40px;'>";
-		$extensions = explode(',',$this->extensionsFilter);
-		$out .= $this->php_file_tree($this->dirPath, "[link]", $extensions);
-		$out .= "</div>";
 		if ($this->input->post->saveFile)
 		{
-			$openFile = fopen($file, "a");
-			ftruncate($openFile, 0);
-			$output = $this->input->post->file_edit;
+			$openFile = fopen($file, "w");
+			$output   = $this->input->post->file_edit;
 			fwrite($openFile, $output);
 			fclose($openFile);
 
 			$queryString = ($this->input->get->path) ? "?path=".$this->input->get->path : "";
-			wire("session")->redirect("http://localhost/pw/processwire/setup/file-editor/".$queryString);
+			wire("session")->redirect($this->config->urls->httpRoot . "processwire/setup/" . $this->page->name . "/" . $queryString);
 		}
 		$out .= "<div style='clear:both;'></div>";
 		return $out;
 	}
-
-	/**
-	 * Called only when your module is installed
-	 *
-	 * If you don't need anything here, you can simply remove this method.
-	 *
-	 */
-	public function ___install() {
-		parent::___install(); // always remember to call parent method
-	}
-
-	/**
-	 * Called only when your module is uninstalled
-	 *
-	 * This should return the site to the same state it was in before the module was installed.
-	 *
-	 * If you don't need anything here, you can simply remove this method.
-	 *
-	 */
-	public function ___uninstall() {
-		parent::___uninstall(); // always remember to call parent method
-	}
-
-
 
 
 	public function php_file_tree($directory, $return_link, $extensions = array()) {
@@ -151,7 +112,14 @@ class ProcessFileEdit extends Process {
 			foreach( array_keys($file) as $key ) {
 				if( !is_dir("$directory/$file[$key]") ) {
 					$ext = substr($file[$key], strrpos($file[$key], ".") + 1);
-					if( !in_array($ext, $extensions) ) unset($file[$key]);
+					if($this->extFilter == true)
+					{
+						if( in_array($ext, $extensions) ) unset($file[$key]);
+					}
+					else if ($this->extFilter == false)
+					{
+						if( !in_array($ext, $extensions) ) unset($file[$key]);
+					}
 				}
 			}
 		}
@@ -185,7 +153,7 @@ class ProcessFileEdit extends Process {
 	public function php4_scandir($dir) {
 		$dh  = opendir($dir);
 		while( false !== ($filename = readdir($dh)) ) {
-		    $files[] = $filename;
+			$files[] = $filename;
 		}
 		sort($files);
 		return($files);

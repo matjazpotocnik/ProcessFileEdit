@@ -1,22 +1,73 @@
-/**
- * This optional CSS file is only loaded when the ProcessHello module is run
- *
- * Remove it if you have no CSS styles to add.
- *
- */
 
- .php-file-tree .pft-directory:before {
-	 font-family: FontAwesome;
-     content: '\f07b';
-	 padding-right: 5px;
- }
+/* PHP File Tree Default Theme
 
- .php-file-tree .pft-file:before {
-	font-family: FontAwesome;
- 	content: '\f0f6';
- 	padding-right: 5px;
+	By Cory LaViska (http://abeautifulsite.net/)
+	Featuring the Silk Icon Set from famfamfam (http://www.famfamfam.com/lab/icons/silk/)
+
+*/
+
+.php-file-tree {
+	font-family: Georgia;
+	font-size: 12px;
+	letter-spacing: 1px;	line-height: 1.5;
 }
 
-ul ul {
+.php-file-tree A {
+	color: #000000;
+	text-decoration: none;
+}
+
+.php-file-tree A:hover {
+	color: #666666;
+}
+
+.php-file-tree .open {
+	font-style: italic;
+}
+
+.php-file-tree .closed {
+	font-style: normal;
+}
+.php-file-tree .pft-directory:before {
+	font-family: FontAwesome;
+	content: '\f07b';
+	padding-right: 5px;
+}
+
+.php-file-tree .pft-file:before {
+	font-family: FontAwesome;
+	content: '\f0f6';
+	padding-right: 5px;
+}
+
+.fe-file-tree ul ul {
 	margin-left: 15px;
 }
+
+/* PHP File Tree Default Theme end */
+
+.fe-editor {
+	float: none;
+	width: auto;
+}
+
+.fe-file-tree {
+	float: none;
+	width: auto;
+	margin: 20px;
+}
+
+@media all and (min-width: 900px) {
+	.fe-editor {
+		float: left;
+		width: 75%;
+	}
+
+	.fe-file-tree {
+		float: left;
+		margin-left: 20px;
+		width: 20%;
+	}
+
+}
+
