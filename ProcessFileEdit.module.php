@@ -89,6 +89,7 @@ class ProcessFileEdit extends Process {
 	public function php_file_tree($directory, $return_link, $extensions = array()) {
 		// Generates a valid XHTML list of all directories, sub-directories, and files in $directory
 		// Remove trailing slash
+		$code = "";
 		if( substr($directory, -1) == "/" ) $directory = substr($directory, 0, strlen($directory) - 1);
 		$code .= $this->php_file_tree_dir($directory, $return_link, $extensions);
 		return $code;
@@ -96,9 +97,9 @@ class ProcessFileEdit extends Process {
 
 	public function php_file_tree_dir($directory, $return_link, $extensions = array(), $first_call = true, $parent = null) {
 		// Recursive function called by php_file_tree() to list directories/files
-
+		$php_file_tree = "";
 		// Get and sort directories/files
-		if( function_exists("scandir") ) $file = scandir($directory); else $file = $this->php4_scandir($directory);
+		if( function_exists("scandir") ) $file = scandir($directory); else die("no scandir function");
 		natcasesort($file);
 		// Make directories first
 		$files = $dirs = array();
@@ -125,7 +126,7 @@ class ProcessFileEdit extends Process {
 		}
 
 		if( count($file) > 2 ) { // Use 2 instead of 0 to account for . and .. "directories"
-			$php_file_tree = "<ul";
+			$php_file_tree .= "<ul";
 			if( $first_call ) { $php_file_tree .= " class=\"php-file-tree\""; $first_call = false; }
 			$php_file_tree .= ">";
 			foreach( $file as $this_file ) {
@@ -147,16 +148,6 @@ class ProcessFileEdit extends Process {
 			$php_file_tree .= "</ul>";
 		}
 		return $php_file_tree;
-	}
-
-	// For PHP4 compatibility
-	public function php4_scandir($dir) {
-		$dh  = opendir($dir);
-		while( false !== ($filename = readdir($dh)) ) {
-			$files[] = $filename;
-		}
-		sort($files);
-		return($files);
 	}
 
 }
