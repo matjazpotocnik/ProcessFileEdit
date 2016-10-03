@@ -79,7 +79,7 @@ class ProcessFileEdit extends Process {
 			fclose($openFile);
 
 			$queryString = ($this->input->get->path) ? "?path=".$this->input->get->path : "";
-			wire("session")->redirect($this->config->urls->httpRoot . "processwire/setup/" . $this->page->name . "/" . $queryString);
+			wire("session")->redirect($this->config->urls->httpAdmin . "setup/" . $this->page->name . "/" . $queryString);
 		}
 		$out .= "<div style='clear:both;'></div>";
 		return $out;
