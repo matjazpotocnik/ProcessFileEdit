@@ -1,51 +1,101 @@
-
 /* PHP File Tree Default Theme
 
-	By Cory LaViska (http://abeautifulsite.net/)
-	Featuring the Silk Icon Set from famfamfam (http://www.famfamfam.com/lab/icons/silk/)
+	By Cory LaViska (http://abeautifulsite.net/), modifed by matjazp
 
 */
 
 .php-file-tree {
-	font-family: Georgia;
-	font-size: 12px;
-	letter-spacing: 1px;	line-height: 1.5;
 }
 
-.php-file-tree A {
-	color: #000000;
-	text-decoration: none;
-}
-
-.php-file-tree A:hover {
-	color: #666666;
-}
-
-.php-file-tree .open {
-	font-style: italic;
-}
-
-.php-file-tree .closed {
-	font-style: normal;
-}
-.php-file-tree .pft-directory:before {
-	font-family: FontAwesome;
-	content: '\f07b';
-	padding-right: 5px;
-}
-
-.php-file-tree .pft-file:before {
-	font-family: FontAwesome;
-	content: '\f0f6';
-	padding-right: 5px;
+/* Hide all subfolders at startup */
+.php-file-tree ul {
+	display: none;
 }
 
 .fe-file-tree ul ul {
 	margin-left: 15px;
 }
 
-/* PHP File Tree Default Theme end */
+.php-file-tree li {
+	margin: 0;
+}
 
+.php-file-tree a {
+	/* color: #7a002b; PW default theme */
+	color: #2f4248; /* neutral grey */
+	text-decoration: none;
+	display: block;
+	border-bottom: 1px solid #dee6ea;
+	padding: .5em 0;
+}
+
+/*
+.php-file-tree .pft-file a {
+	color: #000;
+}
+*/
+
+.php-file-tree a:hover {
+	/* color: #db1174;*/
+	color: rgba(0,0,0,0.6);
+}
+
+.php-file-tree a:focus {
+	outline: 0 !important;
+}
+
+/*
+.php-file-tree li ul {
+	border-top: 1px solid #dee6ea;
+	border-top: 1px solid red;
+}
+*/
+
+.php-file-tree .pft-dir a:before {
+	font-family: FontAwesome;
+	content: '\f07b';
+	padding-right: 5px;
+}
+
+.php-file-tree .pft-file a:before {
+	font-family: FontAwesome;
+	content: '\f0f6';
+	padding-right: 5px;
+}
+
+/* examples
+.php-file-tree .ext-jpg a:before {
+	font-family: FontAwesome;
+	content: '\f1c5';
+	padding-right: 5px;
+}
+.fa-file-pdf-o:before{content:"\f1c1";color:#f00}
+.fa-file-word-o:before{content:"\f1c2";color:#2b5796}
+.fa-file-excel-o:before{content:"\f1c3";color:#1e7145}
+.fa-file-powerpoint-o:before{content:"\f1c4";color:#d14424}
+.fa-file-image-o:before{content:"\f1c5";color:#ffc609}
+.fa-file-archive-o:before{content:"\f1c6"}
+.fa-file-video-o:before{content:"\f1c8"}
+.fa-file-o:before{content:"\f016"}
+*/
+/*
+.php-file-tree .ext-php a {color:#378000}
+.php-file-tree .ext-php a:hover {color:#51b109}
+
+.php-file-tree .ext-module a {color:#378000}
+.php-file-tree .ext-module a:hover {color:#51b109}
+*/
+
+.err, #change {
+	color: #e92003;
+	font-size: 120%;
+}
+
+#change {
+	padding-left:.3em;
+}
+
+/* not needed
 .fe-editor {
 	float: none;
 	width: auto;
@@ -57,7 +107,7 @@
 	margin: 20px;
 }
 
-@media all and (min-width: 900px) {
+/*@media all and (min-width: 900px) {
 	.fe-editor {
 		float: left;
 		width: 75%;
@@ -70,4 +120,4 @@
 	}
 
 }
-
+*/

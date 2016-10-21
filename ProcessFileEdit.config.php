@@ -17,8 +17,9 @@ class ProcessFileEditConfig extends ModuleConfig {
 			array(
 				'name'        => 'dirPath',
 				'type'        => 'text',
-				'label'       => $this->_('Directory Path'), // field label
+				'label'       => $this->_('Directory Path'),
 				'description' => $this->_('Path to the directory from which to get files.'),
+				'notes'       => $this->_('WARNING: Be carefull! Do NOT set this to the root of file system.'),
 				'required'    => true,
 				'value'       => $this->config->paths->site,
 			),
@@ -27,9 +28,9 @@ class ProcessFileEditConfig extends ModuleConfig {
 				'name'        => 'defaultFile',
 				'type'        => 'text',
 				'label'       => $this->_('Default File'),
-				'description' => $this->_('Path to the file you want the editor to show by default.Relative to the directory path above.'),
+				'description' => $this->_('Path to the file you want the editor to show by default. Relative to the directory path above.'),
 				'required'    => true,
-				'value'       => "/config.php",
+				'value'       => "config.php",
 			),
 			// Text field: default extensions
 			array(
@@ -38,7 +39,7 @@ class ProcessFileEditConfig extends ModuleConfig {
 				'label'       => $this->_('Extensions Filter'),
 				'description' => $this->_('Comma separated list of extensions to filter files by.'),
 				'required'    => true,
-				'value'       => "js,css,php",
+				'value'       => "js,css,php,module",
 			),
 			// Checkbox field: default editor height
 			array(
@@ -54,7 +55,7 @@ class ProcessFileEditConfig extends ModuleConfig {
 				'type'        => 'text',
 				'label'       => $this->_('Editor Height'),
 				'description' => $this->_('Set the height of the editor.'),
-				'required'    => true,
+				'required'    => false, //MP changed to false
 				'value'       => "500px",
 			),
 		));
