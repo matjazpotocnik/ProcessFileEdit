@@ -96,22 +96,22 @@ class ProcessFileEdit extends Process {
 					$this->session->redirect($this->page->httpUrl . "?f=" . $filebase);
 				}
 			}
-			//continue with edit
+			// continue with edit
 
-			//in modal there are no breadcrumbs
-			//$this->fuel('breadcrumbs')->add(new Breadcrumb('./', $this->_('File Editor')));
-			//$this->setFuel('processHeadline', sprintf($this->_("Edit file: %s"), $file));
+			// in modal there are no breadcrumbs
+			// $this->fuel('breadcrumbs')->add(new Breadcrumb('./', $this->_('File Editor')));
+			// $this->setFuel('processHeadline', sprintf($this->_("Edit file: %s"), $file));
 
-			//$fileUTF8 = htmlentities(iconv('Windows-1250', 'UTF-8', $file), ENT_QUOTES); //MP it works for me on windows
-			$fileUTF8 = htmlentities($this->toUTF8($displayFile), ENT_QUOTES); //MP it works for me
+			//$fileUTF8 = htmlentities(iconv('Windows-1250', 'UTF-8', $file), ENT_QUOTES); // it works for me on windows
+			$fileUTF8 = htmlentities($this->toUTF8($displayFile), ENT_QUOTES);
 			if($fileHandle = @fopen($file, "r+")) {
     	  $fileContent = ((filesize($file) > 0) ? fread($fileHandle, filesize($file)) : '');
       	fclose($fileHandle);
       	$out .= "<h3>" . $fileUTF8 . "<span id='change'></span></h3>";
      	} else {
      		// file is readonly
-  	    //$msg = sprintf($this->_('File %s has readonly permissions.'), $file);
-	      //$this->message($msg);
+  	    // $msg = sprintf($this->_('File %s has readonly permissions.'), $file);
+	      // $this->message($msg);
 	      $ro = true;
       	$out .= "<h3>" . $fileUTF8 . " (readonly)</h3>";
     	}
@@ -284,7 +284,7 @@ class ProcessFileEdit extends Process {
 					// get extension (prepend 'ext-' to prevent invalid classes from extensions that begin with numbers)
 					$ext = "ext-" . strtolower(substr($this_file, strrpos($this_file, ".") + 1));
 					//$ext = "";
-					$link = str_replace("[link]", urlencode("$parent/$this_file"), $return_link); //zakaj to
+					$link = str_replace("[link]", urlencode("$parent/$this_file"), $return_link);
 					$tree .= "<li class='pft-f $ext'><a class='pw-modal pw-modal-large' href='?f=$link'>" . $fileName . "</a></li>";
 				}
 			}

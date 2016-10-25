@@ -6,16 +6,13 @@ $(document).ready( function() {
 	// Expand/collapse on click
 	$(".pft-d a").click( function() {
 		$(this).parent().find("ul:first").slideToggle("fast");
-		//MP if( $(this).parent().attr('className') == "pft-dir" ) {
 		if( $(this).parent().attr('class') == "pft-d" ) {
 			return false;
 		};
 	});
 
 	function setupCloneButton1() {
-		// this is a copy of main.js from admin theme
-		// no head_button in modal view
-		//MP if($("body").is(".modal")) return;
+		//MP this is a copy of main.js from admin theme
 
 		// if there are buttons in the format "a button" without ID attributes, copy them into the masthead
 		// or buttons in the format button.head_button_clone with an ID attribute.
@@ -40,12 +37,10 @@ $(document).ready( function() {
 			} else if($t.hasClass('head_button_clone') || $t.hasClass('head-button')) {
 				$button = $t.clone(true);
 				$button.attr('data-from_id', $t.attr('id')).attr('id', $t.attr('id') + '_copy');
-				//$a = $("<a></a>").attr('href', '#');
 				$button.click(function() {
-					$("#" + $(this).attr('data-from_id')).click(); // .parents('form').submit();
+					$("#" + $(this).attr('data-from_id')).click();
 					return false;
 				});
-				//$head.prepend($a.append($button));
 				$head.prepend($button);
 			}
 			// if($button.hasClass('dropdown-toggle') && $button.attr('data-dropdown')) { }
@@ -55,12 +50,6 @@ $(document).ready( function() {
 
 	setupCloneButton1();
 
-	/*
-	var $buttons = $("button.head_button_clone, button.head-button");
-	if($buttons.length == 0) return;
-	$head = $("<div id='head_button'></div>").prependTo("#content .container");
-	*/
-
 	saveButton = $("#saveFile");
 	saveButton.on('click', function (e) {
 		e.preventDefault();
@@ -69,16 +58,16 @@ $(document).ready( function() {
 		$.ajax({
 			url: saveButton.data('url'),
 			data: $("#editForm").serializeArray(),
-			type: "POST", //use method: for jQuery from 1.9.0
-			success: function (data) { //use done for jQuery 3.0
+			type: "POST",
+			success: function (data) {
 				if(data === "") {
-					$("#change").html(""); //remove *
+					$("#change").html(""); //remove changes indicator (*)
 				} else {
 					alert(data);
 				}
 				return false;
 			},
-			error: function (xhr, textStatus) { //use fail: for jQuery 3.0
+			error: function (xhr, textStatus) {
 				alert("Ajax request failed: " + textStatus);
 				return false;
 			}

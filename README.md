@@ -6,12 +6,10 @@ primarily for superusers, give other users file-edit permission.
 
 ### Directory path
 Path to the directory from which to display directory tree. By default it's set
-to $config->paths->site but it can be overriden. Be carefull not to set it too
-"high", like setting it to the root of file system for exmples, since creating
-directory structure can take too much time and script will time out.
+to $config->paths->site
 
 ### Extensions Filter
-Comma separated list of extensions to filter files by. By default "js,css,php,module".
+Comma separated list of extensions to filter files by. By default "php,module,js,css".
 
 ### Include or exclude extensions
 Check this to exclude the extensions defined in Extension Filter, leave unchecked
@@ -28,6 +26,6 @@ at http://modules.processwire.com/install-uninstall/
 
 ### License
 Copyright (c) 2016 Florea Banus George (https://github.com/f-b-g-m/ProcessFileEdit).  
-Fork by Matja&#x17E; Poto&#x10D;nik (https://github.com/matjazpotocnik/ProcessFileEdit). 
+Fork by Matja&#x17E; Poto&#x10D;nik (https://github.com/matjazpotocnik/ProcessFileEdit).
 
 Licensed under the MIT license. See the LICENSE file for details.
