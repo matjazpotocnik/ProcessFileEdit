@@ -47,38 +47,35 @@
 /*
 .php-file-tree li ul {
 	border-top: 1px solid #dee6ea;
-	border-top: 1px solid red;
 }
 */
 
-.php-file-tree .pft-dir a:before {
+.php-file-tree .pft-d a:before {
 	font-family: FontAwesome;
 	content: '\f07b';
 	padding-right: 5px;
 }
 
-.php-file-tree .pft-file a:before {
+.php-file-tree .pft-f a:before {
 	font-family: FontAwesome;
 	content: '\f0f6';
 	padding-right: 5px;
 }
 
-/* examples
-.php-file-tree .ext-jpg a:before {
+/* more filetype icons...
+.php-file-tree .ext-txt a:before {
 	font-family: FontAwesome;
-	content: '\f1c5';
+	content: '\f0f6';
 	padding-right: 5px;
 }
-.fa-file-pdf-o:before{content:"\f1c1";color:#f00}
-.fa-file-word-o:before{content:"\f1c2";color:#2b5796}
-.fa-file-excel-o:before{content:"\f1c3";color:#1e7145}
-.fa-file-powerpoint-o:before{content:"\f1c4";color:#d14424}
-.fa-file-image-o:before{content:"\f1c5";color:#ffc609}
-.fa-file-archive-o:before{content:"\f1c6"}
-.fa-file-video-o:before{content:"\f1c8"}
-.fa-file-o:before{content:"\f016"}
-*/
+.php-file-tree .ext-css a:before {
+	font-family: FontAwesome;
+	content: '\f1c9';
+	padding-right: 5px;
+}
 /*
+
+/* perhaps different color...
 .php-file-tree .ext-php a {color:#378000}
 .php-file-tree .ext-php a:hover {color:#51b109}
 
@@ -95,29 +92,14 @@
 	padding-left:.3em;
 }
 
-/* not needed
-.fe-editor {
-	float: none;
-	width: auto;
+#head_button button {
+	margin-top: -7px;
 }
 
-.fe-file-tree {
-	float: none;
-	width: auto;
-	margin: 20px;
+.modal #content {
+	padding-bottom: 0;
 }
 
-/*@media all and (min-width: 900px) {
-	.fe-editor {
-		float: left;
-		width: 75%;
-	}
-
-	.fe-file-tree {
-		float: left;
-		margin-left: 20px;
-		width: 20%;
-	}
-
+.modal #editForm {
+	margin-bottom: 0 !important;
 }
-*/
