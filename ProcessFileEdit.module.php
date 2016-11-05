@@ -18,7 +18,7 @@
 class ProcessFileEdit extends Process {
 
 	public function init() {
-		parent::init();
+		parent::init(); //MP res rabimo?
 
 		// When auto_detect_line_endings is turned on, PHP will examine the data read by fgets() and file() to see
 		// if it is using Unix, MS-Dos or Macintosh line-ending conventions.
@@ -26,6 +26,7 @@ class ProcessFileEdit extends Process {
 	}
 
 	public function ___execute() {
+
 		if(!$this->wire('user')->isSuperuser() && !$this->wire('user')->hasPermission('file-editor')) throw new WirePermissionException($this->_('Insufficient permissions.'));
 
 		$msg = $out = $fileContent = "";
@@ -41,8 +42,8 @@ class ProcessFileEdit extends Process {
 		// prevent parent path notation ..
 		if(strpos($this->dirPath, '..') !== false) $msg = sprintf($this->_('Directory %s contains parent path (..) notation.'), $this->dirPath);
 
-		$extensions = $this->toArray($this->extensionsFilter);
-		if(empty($extensions)) $msg = $this->_('Extensions filter is empty.');
+		$this->extensionsFilter = $this->toArray($this->extensionsFilter);
+		if(empty($this->extensionsFilter)) $msg = $this->_('Extensions filter is empty.');
 
 		if($msg != "") {
 			$this->error($msg);
@@ -87,58 +88,69 @@ class ProcessFileEdit extends Process {
 					$this->session->redirect($this->page->httpUrl . "?f=" . $filebase);
 				} else {
 					//error saving
-					$msg = sprintf($this->_('Error saving file %s'), $file);
+					$msg = sprintf($this->_('Error saving file %s'), $displayFile);
 					if($this->wire('input')->get('s')) {
 						return $msg;
 						exit(0); // just in case, not needed
 					}
-	      	$this->message($msg);
+					$this->message($msg);
 					$this->session->redirect($this->page->httpUrl . "?f=" . $filebase);
 				}
 			}
 			// continue with edit
 
 			// in modal there are no breadcrumbs
-			// $this->fuel('breadcrumbs')->add(new Breadcrumb('./', $this->_('File Editor')));
-			// $this->setFuel('processHeadline', sprintf($this->_("Edit file: %s"), $file));
+			$this->fuel('breadcrumbs')->add(new Breadcrumb('./', $this->_('File Editor')));
+			$this->setFuel('processHeadline', sprintf($this->_("Edit file: %s"), $file));
 
 			//$fileUTF8 = htmlentities(iconv('Windows-1250', 'UTF-8', $file), ENT_QUOTES); // it works for me on windows
-			$fileUTF8 = htmlentities($this->toUTF8($displayFile), ENT_QUOTES);
+			//$fileUTF8 = htmlentities($this->toUTF8($displayFile), ENT_QUOTES);
+			$fileUTF8 = $this->toUTF8($displayFile);
 			if($fileHandle = @fopen($file, "r+")) {
-    	  $fileContent = ((filesize($file) > 0) ? fread($fileHandle, filesize($file)) : '');
-      	fclose($fileHandle);
-      	$out .= "<h3>" . $fileUTF8 . "<span id='change'></span></h3>";
-     	} else {
-     		// file is readonly
-  	    // $msg = sprintf($this->_('File %s has readonly permissions.'), $file);
-	      // $this->message($msg);
-	      $ro = true;
-      	$out .= "<h3>" . $fileUTF8 . " (readonly)</h3>";
-    	}
+				$fileContent = ((filesize($file) > 0) ? fread($fileHandle, filesize($file)) : '');
+				fclose($fileHandle);
+				$out .= "<h3>" . $fileUTF8 . "<span id='change'></span></h3>";
+			} else {
+				// file is readonly
+				// $msg = sprintf($this->_('File %s has readonly permissions.'), $file);
+				// $this->message($msg);
+				$ro = true;
+				$out .= "<h3>" . $fileUTF8 . " (readonly)</h3>";
+			}
 
 			$ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
-			if($ext == 'php' || $ext == 'module' || $ext == 'inc') { $mode = "application/x-httpd-php"; }
-			else if($ext == 'js')   { $mode = "text/javascript"; }
-			else if($ext == 'html') { $mode = "text/html";  }
-			else if($ext == 'css')  { $mode = "text/css";   }
-			else                    { $mode = "text/plain"; }
+			if($ext == 'php' || $ext == 'module' || $ext == 'inc') $mode = 'application/x-httpd-php';
+			else if($ext == 'js') $mode = 'text/javascript';
+			else if($ext == 'html' || $ext == 'htm') $mode = 'text/html';
+			else if($ext == 'css') $mode = 'text/css';
+			else if($ext == 'sql') $mode = 'text/x-mysql';
+			else if($ext == 'md') $mode = 'text/x-markdown';
+			else $mode = 'text/plain';
 
 			$config = $this->wire('config');
-			$moduleRoot = $config->urls->siteModules . "ProcessFileEdit/"; //__CLASS__
+			$moduleRoot = $config->urls->siteModules . __CLASS__ . "/";
 			$config->scripts->add("{$moduleRoot}codemirror/lib/codemirror.js");
-			$config->scripts->add("{$moduleRoot}codemirror/mode/php/php.js");
+			$config->scripts->add("{$moduleRoot}codemirror/mode/clike/clike.js");
 			$config->scripts->add("{$moduleRoot}codemirror/mode/xml/xml.js");
 			$config->scripts->add("{$moduleRoot}codemirror/mode/javascript/javascript.js");
-			$config->scripts->add("{$moduleRoot}codemirror/mode/clike/clike.js");
 			$config->scripts->add("{$moduleRoot}codemirror/mode/css/css.js");
-			$config->scripts->add("{$moduleRoot}codemirror/mode/htmlmixed/htmlmixed.js");
-			$config->scripts->add("{$moduleRoot}codemirror/addon/display/fullscreen.js");
+			$config->scripts->add("{$moduleRoot}codemirror/mode/htmlmixed/htmlmixed.js"); // depends on XML, JavaScript and CSS modes
+			$config->scripts->add("{$moduleRoot}codemirror/mode/php/php.js"); // depends on XML, JavaScript, CSS, HTMLMixed and C-like modes
+			$config->scripts->add("{$moduleRoot}codemirror/mode/sql/sql.js");
+			$config->scripts->add("{$moduleRoot}codemirror/mode/markdown/markdown.js");
+			$config->scripts->add("{$moduleRoot}codemirror/addon/search/search.js"); // https://codemirror.net/demo/search.html
+			$config->scripts->add("{$moduleRoot}codemirror/addon/search/searchcursor.js");
+			$config->scripts->add("{$moduleRoot}codemirror/addon/search/jump-to-line.js");
+			$config->scripts->add("{$moduleRoot}codemirror/addon/dialog/dialog.js");
+			$config->scripts->add("{$moduleRoot}codemirror/addon/selection/active-line.js");
+			$config->scripts->add("{$moduleRoot}codemirror/addon/edit/matchbrackets.js");
 			$config->styles->add ("{$moduleRoot}codemirror/lib/codemirror.css");
-			$config->styles->add ("{$moduleRoot}codemirror/addon/display/fullscreen.css");
+			$config->styles->add ("{$moduleRoot}codemirror/addon/dialog/dialog.css");
+			if($this->theme != "default") $config->styles->add ("{$moduleRoot}codemirror/theme/{$this->theme}.css");
 
 			$h = "";
 			if($this->editorHeight) {
-				if($this->editorHeight == "auto" || $this->editorHeight == "") $h = "window.editor.setSize(null, $(window).height() - 200 +'px');";
+				if($this->editorHeight == "auto" || $this->editorHeight == "") $h = "window.editor.setSize(null, $(window).height() - 125 +'px');";
 				else $h = "window.editor.setSize(null, '$this->editorHeight');";
 			}
 
@@ -147,27 +159,28 @@ class ProcessFileEdit extends Process {
 			$(document).ready(function(){
 				//var code = $('#editFile')[0];
 				window.editor = CodeMirror.fromTextArea(document.getElementById('editFile'), {
+					theme: '{$this->theme}',
 					lineNumbers: true,
 					mode: '{$mode}',
 					indentUnit: 4,
 					indentWithTabs: true,
-					//viewport: Infinity,
+					styleActiveLine: true,
+					matchBrackets: true,
 					extraKeys: {
-						'F11': function(cm) {
-							cm.setOption('fullScreen', !cm.getOption('fullScreen'));
-						},
-						'Esc': function(cm) {
-							if (cm.getOption('fullScreen')) cm.setOption('fullScreen', false);
+						'Ctrl-S': function(cm) {
+							$('#saveFile').trigger('click');
 						}
 					}
 				});
 				$h
 				window.editor.on('change', function() {
 					document.getElementById('change').innerHTML = '*';
+					$('#saveFile').removeClass('ui-state-disabled');
+					$('#saveFile_copy').removeClass('ui-state-disabled');
 				});
 			});
 			</script>
-			<style>.CodeMirror{}.CodeMirror-scroll{}</style>
+			<style></style>
 			";
 
 			return $out . $this->buildForm($fileContent, $file, $filebase, $ro);
@@ -182,7 +195,7 @@ class ProcessFileEdit extends Process {
 			$this->wire('modules')->get('JqueryUI')->use('modal');
 
 			$out .= "<div class='fe-file-tree'>";
-			$out .= $this->php_file_tree($this->dirPath, $extensions, $this->extFilter);
+			$out .= $this->php_file_tree($this->dirPath, $this->extensionsFilter, $this->extFilter);
 			$out .= "</div>";
 
 			return $out;
@@ -193,14 +206,14 @@ class ProcessFileEdit extends Process {
 	 * Generates a valid HTML list of all directories, sub-directories and files
 	 *
 	 * @param string $directory starting point, valid path
-	 * @param array $extensions array of strings with extension types (without dot), default: empty array
-	 * @param bool $extFilter to include (true) or exclude (false) files with that extension, default: true
+	 * @param array $extensions array of strings with extension types (without dot), default: empty array, show all files
+	 * @param bool $extFilter to include (false) or exclude (true) files with that extension, default: false
 	 * @return string html markup
 	 *
 	 */
-	 public function php_file_tree($directory, $extensions = array(), $extFilter = true) {
+	 public function php_file_tree($directory, $extensions = array(), $extFilter = false) {
 
-		$timer = Debug::timer();
+		//$timer = Debug::timer();
 
 		if(!function_exists("scandir")) {
 			$msg = $this->_('Error: scandir function does not exist.');
@@ -209,83 +222,73 @@ class ProcessFileEdit extends Process {
 		}
 
 		$directory = rtrim($directory, '/\\'); // strip both slash and backslash at the end
-		//if( substr($directory, -1) == "/" ) $directory = substr($directory, 0, strlen($directory) - 1);
 
-		$code = $this->php_file_tree_dir($directory, "[link]", $extensions, $extFilter);
+		$code  = "<div class='php-file-tree'>";
+		$code .= $this->php_file_tree_dir($directory, $extensions, (bool) $extFilter);
+		$code .= "</div>";
 
-		echo "<!--timer=".Debug::timer($timer)."-->";
+		//echo "<!--timer=".Debug::timer($timer)."-->";
 		return $code;
 	}
 
 	/**
-	 * Recursive function to generate the list of directories/files
+	 * Recursive function to generate the list of directories/files.
 	 *
-	 * @param string $directory starting point, valid path
-	 * @param string $return_link
+	 * @param string $directory starting point, full valid path
 	 * @param array $extensions array of strings with extension types (without dot), default: empty array
-	 * @param bool $extFilter to include (true) or exclude (false) files with that extension, default is true
-	 * @param bool $first_call
-	 * @param string $parent
+	 * @param bool $extFilter to include (false) or exclude (true) files with that extension, default: false (include)
+	 * @param string $parent relative directory path, for internal use only
 	 * @return string html markup
 	 *
 	 */
-	public function php_file_tree_dir($directory, $return_link, $extensions = array(), $extFilter = true, $first_call = true, $parent = null) {
+	private function php_file_tree_dir($directory, $extensions = array(), $extFilter = false, $parent = null) {
 
-		$tree = "";
-		// Get and sort directories/files
-		$file = @scandir($directory); // returns false on error
-		if($file === false) {
-			$file = array(); // to make foreach work
-		} else {
-			$file = array_diff($file, array('.', '..')); // array_diff removes . and ..
-			natcasesort($file);
-		}
+		// Get directories/files
+		$filesArray = array_diff(@scandir($directory), array('.', '..')); // array_diff removes . and ..
 
 		// Filter unwanted extensions
+		// currently empty extensions array returns all files in folders
+		// comment if statement if you want empty extensions array to return no files at all
 		if(!empty($extensions)) {
-			foreach(array_keys($file) as $key) {
-				if(!is_dir("$directory/$file[$key]")) {
-					$ext = substr($file[$key], strrpos($file[$key], ".") + 1);
-					if($extFilter == true) {
-						if(in_array($ext, $extensions)) unset($file[$key]);
-					}
-					else if ($extFilter == false) {
-						if(!in_array($ext, $extensions)) unset($file[$key]);
-					}
+			foreach(array_keys($filesArray) as $key) {
+				if(!is_dir("$directory/$filesArray[$key]")) {
+					$ext = substr($filesArray[$key], strrpos($filesArray[$key], ".") + 1);
+					if($extFilter == in_array($ext, $extensions)) unset($filesArray[$key]);
 				}
 			}
 		}
 
-		// Make directories first
-		$fls = $dirs = array();
-		foreach($file as $this_file) {
-			if(is_dir("$directory/$this_file" )) $dirs[] = $this_file; else $fls[] = $this_file;
-		}
-		$file = array_merge($dirs, $fls);
+		$tree = "";
 
-		if(count($file) > 0) {
-			$tree .= "<ul";
-			if($first_call) {
-				$tree .= " class='php-file-tree'";
-				$first_call = false;
+		if(count($filesArray) > 0) {
+			// Sort directories/files
+			natcasesort($filesArray);
+
+			// Make directories first, then files
+			$fls = $dirs = array();
+			foreach($filesArray as $f) {
+				if(is_dir("$directory/$f")) $dirs[] = $f; else $fls[] = $f;
 			}
-			$tree .= ">";
+			$filesArray = array_merge($dirs, $fls);
 
-			foreach($file as $this_file) {
-				//$fileName = htmlentities(iconv('Windows-1250', 'UTF-8', $this_file), ENT_QUOTES);
-				$fileName = htmlentities($this->toUTF8($this_file), ENT_QUOTES); // this works for me
-				if(is_dir("$directory/$this_file")) {
+			$tree .= "<ul>";
+
+			foreach($filesArray as $file) {
+				//$fileName = htmlentities(iconv('Windows-1250', 'UTF-8', $file), ENT_QUOTES);
+				//$fileName = htmlentities($this->toUTF8($file), ENT_QUOTES); // is htmlentiities needed?
+				$fileName = $this->toUTF8($file); // this works for me
+				if(is_dir("$directory/$file")) {
 					// directory
-					$tree .= "<li class='pft-d'><a href='#'>$fileName</a>";
-					$tree .= $this->php_file_tree_dir("$directory/$this_file", $return_link ,$extensions, $extFilter, false, $parent.'/'.$this_file);
+					$tree .= "<li class='pft-d'><a>$fileName</a>";
+					$tree .= $this->php_file_tree_dir("$directory/$file", $extensions, $extFilter, "$parent/$file"); // no need to urlencode parent/file
 					$tree .= "</li>";
 				} else {
 					// file
 					// get extension (prepend 'ext-' to prevent invalid classes from extensions that begin with numbers)
-					$ext = "ext-" . strtolower(substr($this_file, strrpos($this_file, ".") + 1));
+					$ext = "ext-" . strtolower(substr($file, strrpos($file, ".") + 1));
 					//$ext = "";
-					$link = str_replace("[link]", urlencode("$parent/$this_file"), $return_link);
-					$tree .= "<li class='pft-f $ext'><a class='pw-modal pw-modal-large' href='?f=$link'>" . $fileName . "</a></li>";
+					$link = urlencode("$parent/$file");
+					$tree .= "<li class='pft-f $ext'><a class='pw-modal pw-modal-large' href='?f=$link'>$fileName</a></li>";
 				}
 			}
 
@@ -312,10 +315,13 @@ class ProcessFileEdit extends Process {
 
 		$f = $this->wire('modules')->get('InputfieldTextarea');
 		$f->attr('id+name','editFile');
-		$f->label = $this->_('Content');
+		//$f->label = $this->_('Content');
 		//$f->label = $file;
 		//$f->label = "&nbsp;";
-		$f->collapsed = Inputfield::collapsedNo;
+		//$f->label = "";
+		$f->skipLabel = true;
+		//$f->collapsed = Inputfield::collapsedNo;
+		$f->collapsed = Inputfield::collapsedNever;
 		$f->value = $fileContent;
 		//$f->value = htmlspecialchars($fileContent);
 		$f->rows = 22;
@@ -327,7 +333,7 @@ class ProcessFileEdit extends Process {
 			$f->attr('id+name','saveFile');
 			$f->value = $this->_('Save file');
 			$f->attr('data-url', $form->action . "&s=1");	// in ajax form submit $input->post->saveFile is not available
-			$f->addClass('aos_hotkeySave head_button_clone'); // add support for AdminOnSteroids ctrl+s
+			$f->addClass('aos_hotkeySave head_button_clone ui-state-disabled'); // add support for AdminOnSteroids ctrl+s
 			$form->add($f);
 		}
 
@@ -385,7 +391,7 @@ class ProcessFileEdit extends Process {
 	 * @return array
 	 *
 	 */
-	private function toArray($extensions, $delimiter =',') {
+	private function toArray($extensions, $delimiter = ',') {
 		$ext = preg_replace('# +#', '', $extensions); // remove all spaces
 		$ext = array_filter(explode($delimiter, $ext), 'strlen'); // convert to array splitting by delimiter
 		return $ext;

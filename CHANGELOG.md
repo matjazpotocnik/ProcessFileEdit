@@ -1,5 +1,14 @@
 # Changelog
 
+### 1.5 (2016-11-05)
+- warning about unsaved chages (suggested by tpr)
+- better wording about include/exclude filter (suggested by tpr)
+- better visual feedback on Save (suggested by tpr)
+- theme selection (suggested by tpr)
+- small speed improvement on directory tree generation
+- small enhacements and fixes
+- codemirror update to 5.20.2
+
 ### 1.4 (2016-10-25)
 - bug fixes
 - remove ProcessWire namespace

@@ -4,15 +4,15 @@
 
 */
 
-.php-file-tree {
-}
+.fe-file-tree {}
+.php-file-tree {}
 
 /* Hide all subfolders at startup */
-.php-file-tree ul {
+.php-file-tree > ul ul {
 	display: none;
 }
 
-.fe-file-tree ul ul {
+.php-file-tree ul ul {
 	margin-left: 15px;
 }
 
@@ -21,12 +21,12 @@
 }
 
 .php-file-tree a {
-	/* color: #7a002b; PW default theme */
 	color: #2f4248; /* neutral grey */
 	text-decoration: none;
 	display: block;
 	border-bottom: 1px solid #dee6ea;
 	padding: .5em 0;
+	cursor: pointer;
 }
 
 /*
@@ -36,8 +36,9 @@
 */
 
 .php-file-tree a:hover {
-	/* color: #db1174;*/
-	color: rgba(0,0,0,0.6);
+	color: #db1174;
+	/* color: rgba(0,0,0,0.6); */
+	background: rgba(0, 0, 0, 0.03);
 }
 
 .php-file-tree a:focus {
@@ -54,26 +55,49 @@
 	font-family: FontAwesome;
 	content: '\f07b';
 	padding-right: 5px;
+	padding-left: 5px;
+	font-size: 14px;
+	min-width: 28px;
+	margin-right: -4px;
+	display: inline-block;
 }
+.php-file-tree .pft-d-open > a:before {
+	/*content: '\f115'; non filled */
+	content: '\f07c';
+}
+/*
+.php-file-tree .pft-d:hover {
+	background: rgba(0, 0, 0, 0.03);
+}
+*/
 
 .php-file-tree .pft-f a:before {
 	font-family: FontAwesome;
 	content: '\f0f6';
-	padding-right: 5px;
+	padding-right: 6px;
+	font-size: 14px;
 }
 
-/* more filetype icons...
+.pft-f > a {
+	padding-left: 6px;
+}
+
+/* more filetype icons... */
 .php-file-tree .ext-txt a:before {
 	font-family: FontAwesome;
 	content: '\f0f6';
 	padding-right: 5px;
+	font-size: 14px;
 }
-.php-file-tree .ext-css a:before {
+.php-file-tree .ext-css a:before,
+.php-file-tree .ext-htm a:before,
+.php-file-tree .ext-html a:before
+ {
 	font-family: FontAwesome;
 	content: '\f1c9';
 	padding-right: 5px;
+	font-size: 14px;
 }
-/*
 
 /* perhaps different color...
 .php-file-tree .ext-php a {color:#378000}
@@ -89,10 +113,10 @@
 }
 
 #change {
-	padding-left:.3em;
+	padding-left: .2em;
 }
 
-#head_button button {
+.modal #head_button button {
 	margin-top: -7px;
 }
 
