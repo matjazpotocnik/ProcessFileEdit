@@ -18,7 +18,7 @@
 class ProcessFileEdit extends Process {
 
 	public function init() {
-		parent::init(); //MP res rabimo?
+		parent::init();
 
 		// When auto_detect_line_endings is turned on, PHP will examine the data read by fgets() and file() to see
 		// if it is using Unix, MS-Dos or Macintosh line-ending conventions.
@@ -119,13 +119,35 @@ class ProcessFileEdit extends Process {
 			}
 
 			$ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
-			if($ext == 'php' || $ext == 'module' || $ext == 'inc') $mode = 'application/x-httpd-php';
-			else if($ext == 'js') $mode = 'text/javascript';
-			else if($ext == 'html' || $ext == 'htm') $mode = 'text/html';
-			else if($ext == 'css') $mode = 'text/css';
-			else if($ext == 'sql') $mode = 'text/x-mysql';
-			else if($ext == 'md') $mode = 'text/x-markdown';
-			else $mode = 'text/plain';
+			switch ($ext) {
+				case 'php':
+				case 'module':
+				case 'inc':
+					$mode = 'application/x-httpd-php';
+					break;
+				case 'js':
+					$mode = 'text/javascript';
+					break;
+				case 'html':
+				case 'htm':
+				case 'latte':
+				case 'smarty':
+				case 'twig':
+					$mode = 'text/html';
+					break;
+				case 'css':
+					$mode = 'text/css';
+					break;
+				case 'sql':
+					$mode = 'text/x-mysql';
+					break;
+				case 'md':
+				case 'markdown':
+					$mode = 'text/x-markdown';
+					break;
+				default:
+					$mode = 'text/plain';
+			};
 
 			$config = $this->wire('config');
 			$moduleRoot = $config->urls->siteModules . __CLASS__ . "/";
@@ -166,6 +188,7 @@ class ProcessFileEdit extends Process {
 					indentWithTabs: true,
 					styleActiveLine: true,
 					matchBrackets: true,
+					lineWrapping: true,
 					extraKeys: {
 						'Ctrl-S': function(cm) {
 							$('#saveFile').trigger('click');
