@@ -7,14 +7,12 @@
  *
  * @author Florea Banus George, Matjaz Potocnik
  *
- * ProcessWire 3.x
- * Copyright (C) 2016 by Ryan Cramer
+ * ProcessWire 2.x/3.x, Copyright 2016 by Ryan Cramer
  * Licensed under GNU/GPL v2
  *
  * https://processwire.com
  *
  */
-
 class ProcessFileEdit extends Process {
 
 	public function init() {

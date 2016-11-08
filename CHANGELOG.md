@@ -1,6 +1,9 @@
 # Changelog
 
-### 1.5 (2016-11-06)
+### 1.5.2 (2016-11-08)
+- fix to adapt to changes in modal windows
+
+### 1.5.1 (2016-11-06)
 - more codemirror language modes (suggested by tpr)
 
 ### 1.5 (2016-11-05)
