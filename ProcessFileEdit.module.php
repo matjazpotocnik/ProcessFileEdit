@@ -214,6 +214,7 @@ class ProcessFileEdit extends Process {
 			$this->setFuel('processHeadline', sprintf($this->_("Path: %s"), $displayPath));
 
 			$this->wire('modules')->get('JqueryUI')->use('modal');
+			$this->wire('modules')->get('JqueryMagnific');
 
 			$out .= "<div class='fe-file-tree'>";
 			$out .= $this->php_file_tree($this->dirPath, $this->extensionsFilter, $this->extFilter);
@@ -293,6 +294,7 @@ class ProcessFileEdit extends Process {
 			$filesArray = array_merge($dirs, $fls);
 
 			$tree .= "<ul>";
+			//echo "root=" . wire('config')->urls->root; die();
 
 			foreach($filesArray as $file) {
 				//$fileName = htmlentities(iconv('Windows-1250', 'UTF-8', $file), ENT_QUOTES);
@@ -307,9 +309,29 @@ class ProcessFileEdit extends Process {
 					// file
 					// get extension (prepend 'ext-' to prevent invalid classes from extensions that begin with numbers)
 					$ext = "ext-" . strtolower(substr($file, strrpos($file, ".") + 1));
-					//$ext = "";
 					$link = urlencode("$parent/$file");
-					$tree .= "<li class='pft-f $ext'><a class='pw-modal pw-modal-large' href='?f=$link'>$fileName</a></li>";
+					if(in_array($ext, array("ext-jpg", "ext-png", "ext-gif", "ext-bmp"))) {
+						switch ($this->dirPath . '/') {
+							case wire('config')->paths->root:
+								$url = wire('config')->urls->root;
+								break;
+							case wire('config')->paths->site:
+								$url = wire('config')->urls->site;
+								break;
+							case wire('config')->paths->templates:
+								$url = wire('config')->urls->templates;
+								break;
+							case wire('config')->paths->siteModules:
+								$url = wire('config')->urls->siteModules;
+								break;
+							default:
+								$url = "invalid";
+						};
+						$link = rtrim($url, '/\\') . $link;
+						$tree .= "<li class='pft-f $ext'><a href='$link'>$fileName</a></li>";
+					} else {
+						$tree .= "<li class='pft-f $ext'><a class='pw-modal pw-modal-large' href='?f=$link'>$fileName</a></li>";
+					}
 				}
 			}
 

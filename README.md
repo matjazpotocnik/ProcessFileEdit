@@ -12,9 +12,9 @@ to $config->paths->site
 Comma separated list of extensions to filter files by. By default "php,module,js,css".
 
 ### Include or exclude extensions
-Select to include or exclude files based on the extensions defined in Extension Filter.
-Include is default, so files matching extensions will be displayed in directory/file
-tree.
+Select to include or exclude files based on the extensions defined in Extension
+Filter. Include is default, so files matching extensions will be displayed in
+directory/file tree.
 
 ### Editor Height
 The height of the editor textarea, default is "auto", can be any height like "450px".

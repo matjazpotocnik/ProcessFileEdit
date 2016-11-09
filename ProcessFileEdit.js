@@ -119,4 +119,15 @@ $(document).ready(function () {
         }
     });
 
+    if (!!$.prototype.magnificPopup) {
+        var magnificOptions = {
+            closeOnContentClick: true,
+            closeBtnInside: true
+        };
+
+        var magnificOptionsImage = $.extend(true, {}, magnificOptions);
+        magnificOptionsImage.type = "image";
+        $(".ext-jpg a, .ext-png a, .ext-gif a, .ext-bmp a").magnificPopup(magnificOptionsImage);
+    }
+
 });

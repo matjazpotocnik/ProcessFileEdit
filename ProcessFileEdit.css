@@ -121,7 +121,7 @@
 }
 
 .modal #content {
-	padding-bottom: 0;
+	padding-bottom: 0 !important;
 }
 
 .modal #editForm {

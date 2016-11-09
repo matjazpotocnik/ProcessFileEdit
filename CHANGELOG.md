@@ -1,5 +1,8 @@
 # Changelog
 
+### 1.5.3 (2016-11-09)
+- open images (jpg, gif, png, bmp) in modal
+
 ### 1.5.2 (2016-11-08)
 - fix to adapt to changes in modal windows
 
