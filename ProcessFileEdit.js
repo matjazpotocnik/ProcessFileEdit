@@ -32,7 +32,7 @@ $(document).ready(function () {
         // or buttons in the format button.head_button_clone with an ID attribute.
         // var $buttons = $("#content a[id=''] button[id=''], #content button.head_button_clone[id!='']");
         // var $buttons = $("#content a:not([id]) button:not([id]), #content button.head_button_clone[id!=]");
-        var $buttons = $("button.pw-head-button, button.head-button, button.head_button_clone"); // head_button_clone is legacy
+        var $buttons = $("button.pw-head-button, button.head-button, button.head_button_clone"); // head_button_clone is legacy or is it head-button?
 
         if ($buttons.length === 0) {
             return;
@@ -51,7 +51,7 @@ $(document).ready(function () {
             if ($a.length > 0) {
                 $button = $t.parent("a").clone(true);
                 $head.prepend($button);
-            } else if ($t.hasClass("pw-head-button") || $t.hasClass("head_button_clone") || $t.hasClass("head-button")) { // head-button is legacy
+            } else if ($t.hasClass("pw-head-button") || $t.hasClass("head_button_clone") || $t.hasClass("head-button")) {
                 $button = $t.clone(true);
                 $button.attr("data-from_id", $t.attr("id")).attr("id", $t.attr("id") + "_copy");
                 $button.click(function () {
@@ -122,7 +122,18 @@ $(document).ready(function () {
     if (!!$.prototype.magnificPopup) {
         var magnificOptions = {
             closeOnContentClick: true,
-            closeBtnInside: true
+            closeBtnInside: true,
+            image: {
+                titleSrc: function(item) {
+                    //return unescape(item.el.attr("href"));
+                    return item.el.text();
+                }
+            },
+            callbacks: {
+                open: function () {
+                    //
+                }
+            }
         };
 
         var magnificOptionsImage = $.extend(true, {}, magnificOptions);

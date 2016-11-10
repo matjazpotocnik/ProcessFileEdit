@@ -294,7 +294,6 @@ class ProcessFileEdit extends Process {
 			$filesArray = array_merge($dirs, $fls);
 
 			$tree .= "<ul>";
-			//echo "root=" . wire('config')->urls->root; die();
 
 			foreach($filesArray as $file) {
 				//$fileName = htmlentities(iconv('Windows-1250', 'UTF-8', $file), ENT_QUOTES);
@@ -311,22 +310,7 @@ class ProcessFileEdit extends Process {
 					$ext = "ext-" . strtolower(substr($file, strrpos($file, ".") + 1));
 					$link = urlencode("$parent/$file");
 					if(in_array($ext, array("ext-jpg", "ext-png", "ext-gif", "ext-bmp"))) {
-						switch ($this->dirPath . '/') {
-							case wire('config')->paths->root:
-								$url = wire('config')->urls->root;
-								break;
-							case wire('config')->paths->site:
-								$url = wire('config')->urls->site;
-								break;
-							case wire('config')->paths->templates:
-								$url = wire('config')->urls->templates;
-								break;
-							case wire('config')->paths->siteModules:
-								$url = wire('config')->urls->siteModules;
-								break;
-							default:
-								$url = "invalid";
-						};
+						$url = $this->convertPathToUrl($this->dirPath);
 						$link = rtrim($url, '/\\') . $link;
 						$tree .= "<li class='pft-f $ext'><a href='$link'>$fileName</a></li>";
 					} else {
@@ -358,10 +342,6 @@ class ProcessFileEdit extends Process {
 
 		$f = $this->wire('modules')->get('InputfieldTextarea');
 		$f->attr('id+name','editFile');
-		//$f->label = $this->_('Content');
-		//$f->label = $file;
-		//$f->label = "&nbsp;";
-		//$f->label = "";
 		$f->skipLabel = true;
 		//$f->collapsed = Inputfield::collapsedNo;
 		$f->collapsed = Inputfield::collapsedNever;
@@ -438,6 +418,36 @@ class ProcessFileEdit extends Process {
 		$ext = preg_replace('# +#', '', $extensions); // remove all spaces
 		$ext = array_filter(explode($delimiter, $ext), 'strlen'); // convert to array splitting by delimiter
 		return $ext;
+	}
+
+	/**
+	 * Convert $config->paths->key to $config->urls->key
+	 * @param string $path eg. $config->paths->templates
+	 * @param array $pathTypes eg. array('site','templates'), if not specified, array is constructed from $config->paths
+	 * @return string path converted tor url, empty string if path not found
+	 *
+	 */
+	private function convertPathToUrl($path, $pathTypes = array()) {
+		$path = rtrim($path, '/\\') . '/'; // strip both slash and backslash at the end and then re-add separator
+		$url = '';
+
+		if(!$pathTypes) {
+			$pathTypes = array('root'); // root is missing
+			foreach(wire('config')->paths as $pathType => $dummy) $pathTypes[] = $pathType;
+		}
+
+		foreach($pathTypes as $pathType) {
+			/*if($path == wire('config')->paths->assets . "sessions/" ) {
+				$url = wire('config')->urls->assets . "sessions/";
+				break;
+			}*/
+			if(wire('config')->paths->{$pathType} == $path) {
+				$url = wire('config')->urls->{$pathType};
+				break;
+			}
+		}
+
+		return $url;
 	}
 
 }

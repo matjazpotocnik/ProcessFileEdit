@@ -1,5 +1,8 @@
 # Changelog
 
+### 1.5.4 (2016-11-10)
+- add caption to images in modal
+
 ### 1.5.3 (2016-11-09)
 - open images (jpg, gif, png, bmp) in modal
 
