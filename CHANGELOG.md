@@ -1,5 +1,8 @@
 # Changelog
 
+### 1.5.5 (2016-11-11)
+- add link to template edit (suggested by tpr)
+
 ### 1.5.4 (2016-11-10)
 - add caption to images in modal
 

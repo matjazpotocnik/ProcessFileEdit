@@ -1,8 +1,10 @@
 # ProcessFileEdit
 
-Allow editing of files on filesystem. The list of directories and files are
-displayed, clicking on file opens modal window with codemirror editor. Intended
-primarily for superusers, give other users file-edit permission.
+Allow modal editing of files on filesystem. The list of directories and files
+are displayed, clicking on file opens modal window with codemirror editor. If
+file is an image, viewer is opened in modal. If file is used as a template, link
+to the template edit is provided. Intended primarily for superusers, give other
+users file-edit permission.
 
 ### Directory path
 Path to the directory from which to display directory tree. By default it's set

@@ -18,6 +18,7 @@
 
 .php-file-tree li {
 	margin: 0;
+	position: relative;
 }
 
 .php-file-tree a {
@@ -27,6 +28,22 @@
 	border-bottom: 1px solid #dee6ea;
 	padding: .5em 0;
 	cursor: pointer;
+}
+
+.php-file-tree .pft-f span {
+	position: absolute;
+	right: 0;
+	top: 0;
+	padding: .5em 0;
+	cursor: pointer;
+	opacity: .6;
+}
+.php-file-tree .pft-f span:hover {
+	opacity: 1;
+	color: #db1174;
+}
+.php-file-tree .pft-f span:before {
+	content: "#";
 }
 
 /*

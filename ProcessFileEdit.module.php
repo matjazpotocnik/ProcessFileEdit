@@ -15,12 +15,22 @@
  */
 class ProcessFileEdit extends Process {
 
+	/**
+	 * Module configuraton values
+	 *
+	 */
+	/** @var string */   protected $templatesPath;
+	/** @var string */   protected $templateExtension;
+
 	public function init() {
 		parent::init();
 
 		// When auto_detect_line_endings is turned on, PHP will examine the data read by fgets() and file() to see
 		// if it is using Unix, MS-Dos or Macintosh line-ending conventions.
 		ini_set('auto_detect_line_endings', true);
+
+		$this->templatesPath = $directory = rtrim($this->wire('config')->paths->templates, '/\\');
+		$this->templateExtension = $this->wire('config')->templateExtension;
 	}
 
 	public function ___execute() {
@@ -306,15 +316,22 @@ class ProcessFileEdit extends Process {
 					$tree .= "</li>";
 				} else {
 					// file
-					// get extension (prepend 'ext-' to prevent invalid classes from extensions that begin with numbers)
-					$ext = "ext-" . strtolower(substr($file, strrpos($file, ".") + 1));
+					$ext = strtolower(substr($file, strrpos($file, ".") + 1));
 					$link = urlencode("$parent/$file");
-					if(in_array($ext, array("ext-jpg", "ext-png", "ext-gif", "ext-bmp"))) {
+					if(in_array($ext, array("jpg", "png", "gif", "bmp"))) {
 						$url = $this->convertPathToUrl($this->dirPath);
-						$link = rtrim($url, '/\\') . $link;
+						$link = rtrim($url, '/\\') . $link; //MP rabim?
 						$tree .= "<li class='pft-f $ext'><a href='$link'>$fileName</a></li>";
+					} else if($directory == $this->templatesPath && $ext == $this->templateExtension) {
+						$a = $this->isTemplateFile($file);
+						if($a !== false) {
+							$tpl = "<span class='pw-modal pw-modal-large' data-href='$a[1]'>$a[0]</span>";
+							$tree .= "<li class='pft-f ext-$ext'><a class='pw-modal pw-modal-large' href='?f=$link'>$fileName</a>$tpl</li>";
+						} else {
+							$tree .= "<li class='pft-f ext-$ext'><a class='pw-modal pw-modal-large' href='?f=$link'>$fileName</a></li>";
+						}
 					} else {
-						$tree .= "<li class='pft-f $ext'><a class='pw-modal pw-modal-large' href='?f=$link'>$fileName</a></li>";
+						$tree .= "<li class='pft-f ext-$ext'><a class='pw-modal pw-modal-large' href='?f=$link'>$fileName</a></li>";
 					}
 				}
 			}
@@ -343,10 +360,8 @@ class ProcessFileEdit extends Process {
 		$f = $this->wire('modules')->get('InputfieldTextarea');
 		$f->attr('id+name','editFile');
 		$f->skipLabel = true;
-		//$f->collapsed = Inputfield::collapsedNo;
 		$f->collapsed = Inputfield::collapsedNever;
-		$f->value = $fileContent;
-		//$f->value = htmlspecialchars($fileContent);
+		$f->value = $fileContent; //htmlspecialchars($fileContent);
 		$f->rows = 22;
 		$form->add($f);
 
@@ -448,6 +463,23 @@ class ProcessFileEdit extends Process {
 		}
 
 		return $url;
+	}
+
+	/**
+	 * Check if filename is used as a template file
+	 * @param string $filenam with or without path
+	 * @return array|boolean array (templatename, adminediturl), false otherwise
+	 *
+	 */
+	private function isTemplateFile ($filename) {
+		$filename = basename($filename);
+		foreach(wire('templates') as $tpl) {
+			if ($tpl->flags !== 0) continue; // skip system templates
+			if(basename($tpl->filename) == $filename) {
+				return array($tpl->name, wire('config')->urls->httpAdmin . 'setup/template/edit?id=' . $tpl->id);
+			}
+		}
+		return false;
 	}
 
 }
