@@ -144,3 +144,8 @@
 .modal #editForm {
 	margin-bottom: 0 !important;
 }
+
+.mfp-title {
+	font-size: 75%;
+	min-width: 260px;
+}

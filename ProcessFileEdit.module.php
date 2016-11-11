@@ -317,11 +317,11 @@ class ProcessFileEdit extends Process {
 				} else {
 					// file
 					$ext = strtolower(substr($file, strrpos($file, ".") + 1));
-					$link = urlencode("$parent/$file");
+					$link = rawurlencode("$parent/$file"); //before just urlencode
 					if(in_array($ext, array("jpg", "png", "gif", "bmp"))) {
-						$url = $this->convertPathToUrl($this->dirPath);
-						$link = rtrim($url, '/\\') . $link; //MP rabim?
-						$tree .= "<li class='pft-f $ext'><a href='$link'>$fileName</a></li>";
+						$rootUrl = $this->convertPathToUrl($this->dirPath);
+						$link = rtrim($rootUrl, '/\\') . $link;
+						$tree .= "<li class='pft-f ext-$ext'><a href='$link'>$fileName</a></li>";
 					} else if($directory == $this->templatesPath && $ext == $this->templateExtension) {
 						$a = $this->isTemplateFile($file);
 						if($a !== false) {

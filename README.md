@@ -7,7 +7,7 @@ to the template edit is provided. Intended primarily for superusers, give other
 users file-edit permission.
 
 ### Directory path
-Path to the directory from which to display directory tree. By default it's set
+Path to the directory from which to display directory tree. By default it's set 
 to $config->paths->site
 
 ### Extensions Filter

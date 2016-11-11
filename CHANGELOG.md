@@ -1,5 +1,8 @@
 # Changelog
 
+### 1.5.6 (2016-11-11)
+- bug fix with displaying images (reported by tpr)
+
 ### 1.5.5 (2016-11-11)
 - add link to template edit (suggested by tpr)
 
