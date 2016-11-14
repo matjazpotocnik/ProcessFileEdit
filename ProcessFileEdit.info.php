@@ -3,8 +3,8 @@
 $info = array(
 	'title'   => 'Files Editor',
 	'summary' => _('Edit files'),
-	'version' => '1.5.5',
-	'author'  => 'Florea Banus George, Matja&#x17E; Poto&#x10D;nik',
+	'version' => '1.6.0',
+	'author'  => 'Florea Banus George, Matja&zcaron; Poto&ccaron;nik, Roland Toth',
 	'icon'    => 'file-o',
 	'href'    => 'https://github.com/matjazpotocnik/ProcessFileEdit/',
 	'requires'  => 'ProcessWire>=2.5.5, PHP>=5.3.8',

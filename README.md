@@ -28,7 +28,8 @@ at http://modules.processwire.com/install-uninstall/
 
 ### License
 Copyright (c) 2016 Florea Banus George (https://github.com/f-b-g-m/ProcessFileEdit).  
-Fork by Matja&#x17E; Poto&#x10D;nik (https://github.com/matjazpotocnik/ProcessFileEdit).  
+Fork by Matja&zcaron; Poto&ccaron;nik (https://github.com/matjazpotocnik/ProcessFileEdit).  
+Big thanks to Roland Toth.  
 Support forum: https://processwire.com/talk/topic/14276-file-editor/
 
 Licensed under the MIT license. See the LICENSE file for details.

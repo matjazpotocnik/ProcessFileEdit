@@ -1,5 +1,10 @@
 # Changelog
 
+### 1.6.0 (2016-11-12)
+- displays directory path on hover (implemented by tpr)
+- enable url change on directory change (implemented by tpr)
+- changes under the hood
+
 ### 1.5.6 (2016-11-11)
 - bug fix with displaying images (reported by tpr)
 

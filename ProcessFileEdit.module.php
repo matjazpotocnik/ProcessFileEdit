@@ -5,7 +5,7 @@
  *
  * A module for editing files (in the admin area).
  *
- * @author Florea Banus George, Matjaz Potocnik
+ * @author Florea Banus George, Matjaz Potocnik, Roland Toth
  *
  * ProcessWire 2.x/3.x, Copyright 2016 by Ryan Cramer
  * Licensed under GNU/GPL v2
@@ -16,21 +16,37 @@
 class ProcessFileEdit extends Process {
 
 	/**
-	 * Module configuraton values
-	 *
+	 * Path to templates directory without trailing slash
+	 * @var string
 	 */
-	/** @var string */   protected $templatesPath;
-	/** @var string */   protected $templateExtension;
+	protected $templatesPath;
+
+	/**
+	 * Template extension
+	 * @var string
+	 */
+	protected $templateExtension;
+
+	/**
+	 * Root path
+	 * @var string
+	 */
+	protected $rootPath;
 
 	public function init() {
 		parent::init();
 
 		// When auto_detect_line_endings is turned on, PHP will examine the data read by fgets() and file() to see
 		// if it is using Unix, MS-Dos or Macintosh line-ending conventions.
-		ini_set('auto_detect_line_endings', true);
+		ini_set('auto_detect_line_endings', '1');
 
 		$this->templatesPath = $directory = rtrim($this->wire('config')->paths->templates, '/\\');
 		$this->templateExtension = $this->wire('config')->templateExtension;
+		$this->rootPath = $this->wire('config')->paths->root;
+
+		//if(!extension_loaded('mbstring') || !function_exists('iconv')) {
+		//	$this->message("Support for mbstring and iconv is recommended.");
+		//}
 	}
 
 	public function ___execute() {
@@ -111,8 +127,6 @@ class ProcessFileEdit extends Process {
 			$this->fuel('breadcrumbs')->add(new Breadcrumb('./', $this->_('File Editor')));
 			$this->setFuel('processHeadline', sprintf($this->_("Edit file: %s"), $file));
 
-			//$fileUTF8 = htmlentities(iconv('Windows-1250', 'UTF-8', $file), ENT_QUOTES); // it works for me on windows
-			//$fileUTF8 = htmlentities($this->toUTF8($displayFile), ENT_QUOTES);
 			$fileUTF8 = $this->toUTF8($displayFile);
 			if($fileHandle = @fopen($file, "r+")) {
 				$fileContent = ((filesize($file) > 0) ? fread($fileHandle, filesize($file)) : '');
@@ -237,7 +251,7 @@ class ProcessFileEdit extends Process {
 	/**
 	 * Generates a valid HTML list of all directories, sub-directories and files
 	 *
-	 * @param string $directory starting point, valid path
+	 * @param string $directory starting point, valid path, with or without trailing slash
 	 * @param array $extensions array of strings with extension types (without dot), default: empty array, show all files
 	 * @param bool $extFilter to include (false) or exclude (true) files with that extension, default: false
 	 * @return string html markup
@@ -246,7 +260,6 @@ class ProcessFileEdit extends Process {
 	 public function php_file_tree($directory, $extensions = array(), $extFilter = false) {
 
 		//$timer = Debug::timer();
-
 		if(!function_exists("scandir")) {
 			$msg = $this->_('Error: scandir function does not exist.');
 			$this->error($msg);
@@ -266,14 +279,14 @@ class ProcessFileEdit extends Process {
 	/**
 	 * Recursive function to generate the list of directories/files.
 	 *
-	 * @param string $directory starting point, full valid path
+	 * @param string $directory starting point, full valid path, without trailing slash
 	 * @param array $extensions array of strings with extension types (without dot), default: empty array
 	 * @param bool $extFilter to include (false) or exclude (true) files with that extension, default: false (include)
 	 * @param string $parent relative directory path, for internal use only
 	 * @return string html markup
 	 *
 	 */
-	private function php_file_tree_dir($directory, $extensions = array(), $extFilter = false, $parent = null) {
+	private function php_file_tree_dir($directory, $extensions = array(), $extFilter = false, $parent = "") {
 
 		// Get directories/files
 		$filesArray = array_diff(@scandir($directory), array('.', '..')); // array_diff removes . and ..
@@ -306,23 +319,28 @@ class ProcessFileEdit extends Process {
 			$tree .= "<ul>";
 
 			foreach($filesArray as $file) {
-				//$fileName = htmlentities(iconv('Windows-1250', 'UTF-8', $file), ENT_QUOTES);
-				//$fileName = htmlentities($this->toUTF8($file), ENT_QUOTES); // is htmlentiities needed?
-				$fileName = $this->toUTF8($file); // this works for me
+				$fileName = $this->toUTF8($file);
 				if(is_dir("$directory/$file")) {
 					// directory
-					$tree .= "<li class='pft-d'><a>$fileName</a>";
+					$parentDir = "/" . str_replace($this->rootPath, "", $directory . "/"); // directory is without trailing slash
+					$dirPath = $this->toUTF8("$parentDir/$file/");
+					$dirPath = str_replace("//", "/", $dirPath);
+					$tree .= "<li class='pft-d'><a data-p='$dirPath'>$fileName</a>";
 					$tree .= $this->php_file_tree_dir("$directory/$file", $extensions, $extFilter, "$parent/$file"); // no need to urlencode parent/file
 					$tree .= "</li>";
 				} else {
 					// file
+					//MP od $directory odstejes $this->dirPath in dobis $parent
+					//MP $parent = str_replace($this->dirPath, "", $directory);
 					$ext = strtolower(substr($file, strrpos($file, ".") + 1));
-					$link = rawurlencode("$parent/$file"); //before just urlencode
+					$link = str_replace("%2F", "/", rawurlencode("$parent/$file")); // to overcome bug/feature on apache
 					if(in_array($ext, array("jpg", "png", "gif", "bmp"))) {
+						// images
 						$rootUrl = $this->convertPathToUrl($this->dirPath);
 						$link = rtrim($rootUrl, '/\\') . $link;
 						$tree .= "<li class='pft-f ext-$ext'><a href='$link'>$fileName</a></li>";
 					} else if($directory == $this->templatesPath && $ext == $this->templateExtension) {
+						// template files
 						$a = $this->isTemplateFile($file);
 						if($a !== false) {
 							$tpl = "<span class='pw-modal pw-modal-large' data-href='$a[1]'>$a[0]</span>";
@@ -331,6 +349,7 @@ class ProcessFileEdit extends Process {
 							$tree .= "<li class='pft-f ext-$ext'><a class='pw-modal pw-modal-large' href='?f=$link'>$fileName</a></li>";
 						}
 					} else {
+						// just plain file
 						$tree .= "<li class='pft-f ext-$ext'><a class='pw-modal pw-modal-large' href='?f=$link'>$fileName</a></li>";
 					}
 				}
@@ -381,26 +400,21 @@ class ProcessFileEdit extends Process {
 	/**
 	 * Try to convert string to UTF-8, not bulletproof, requires mbstring and iconv support
 	 *
-	 * @param string $str
+	 * @param string $str string to convert to UTF-8
+	 * @param boolean $c
 	 * @return string
 	 *
 	 */
-	private function toUTF8($str) {
+	private function toUTF8($str, $c = false) {
 		// http://stackoverflow.com/questions/7979567/php-convert-any-string-to-utf-8-without-knowing-the-original-character-set-or
 		if(extension_loaded('mbstring') && function_exists('iconv')) {
-			return iconv(mb_detect_encoding($str, mb_detect_order(), true), 'UTF-8', $str);
+			$str = iconv(mb_detect_encoding($str, mb_detect_order(), true), 'UTF-8//TRANSLIT//IGNORE', $str);
 		}
+		// replacement of % must be first!!!
+		if($c) $str = str_replace(array("%", "#", " ", "{", "}", "^", "+"), array("%25", "%23", "%20", "%7B", "%7D", "%5E", "%2B"), $str);
 		return $str;
-
-		//http://stackoverflow.com/questions/505562/detect-file-encoding-in-php
-		//if(!mb_check_encoding($output, 'UTF-8') OR
-		// !($output === mb_convert_encoding(mb_convert_encoding($output, 'UTF-32', 'UTF-8' ), 'UTF-8', 'UTF-32'))) {
-		//	$output = mb_convert_encoding($content, 'UTF-8', 'pass');
-		//}
-
-		//another one
-		//https://github.com/neitanod/forceutf8
 	}
+
 
 	/**
 	 * Sanitize directory/file path:
@@ -461,7 +475,6 @@ class ProcessFileEdit extends Process {
 				break;
 			}
 		}
-
 		return $url;
 	}
 

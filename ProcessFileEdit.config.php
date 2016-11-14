@@ -122,4 +122,5 @@ class ProcessFileEditConfig extends ModuleConfig {
 
 		));
 	}
+
 }

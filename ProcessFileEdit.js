@@ -1,24 +1,51 @@
 /*jslint this:true */
 /*jslint browser:true */
+/*jslint for:true */
 /*global
-    $, window, parent
-*/
+ $, window, parent
+ */
 $(document).ready(function () {
     "use strict";
 
-    // Hide all subfolders at startup
-    // $(".php-file-tree").find("ul").hide(); I hide them with css, much faster
+    if (location.hash !== "") {
+        //var matchingLink = $(".php-file-tree .pft-d > a[data-p='" + location.hash + "'");
+        var matchingLink = $(".php-file-tree .pft-d > a[data-p='" + location.hash.substring(1) + "'");
+
+        matchingLink.parents(".pft-d").addClass("pft-d-open");
+        matchingLink.attr("tabIndex", "1").addClass("active").focus(); // bring into view
+    }
 
     // Expand/collapse on click
     $(".pft-d a").click(function (e) {
+
         var parent = $(this).parent();
         e.preventDefault();
-        parent.find("ul:first").slideToggle("fast");
-        parent.toggleClass("pft-d-open");
-        //if(parent().attr("class") == "pft-d") {
-        if (parent.hasClass("pft-d")) {
-            return false;
+
+        // uncomment this line to disable auto-close other opened dirs (keeps current branch open)
+        $(".php-file-tree .pft-d-open").not($(this).parents()).removeClass("pft-d-open");
+
+        $(".php-file-tree a.active").removeClass("active");
+        if (!parent.hasClass("pft-d-open")) {
+            $(this).addClass("active");
         }
+
+        var path = "#" + $(this).attr("data-p");
+        if (path && history.pushState) {
+
+            //if (location.hash === encodeURI(path) || parent.hasClass("pft-d-open")) {
+            if (location.hash === path || parent.hasClass("pft-d-open")) {
+                if (parent.parents(".pft-d-open").length) {
+                    path = path.replace($(this).text() + "/", "");
+                } else {
+                    path = window.location.pathname + window.location.search;
+                }
+            }
+            //path = encodeURI(path);
+
+            history.replaceState(null, document.title, path);
+        }
+
+        parent.toggleClass("pft-d-open");
     });
 
     function setupCloneButton1() {
@@ -80,7 +107,7 @@ $(document).ready(function () {
             type: "POST",
             success: function (data) {
                 if (data === "") {
-                    isChanged.html(""); //remove changes indicator (*)
+                    isChanged.html("");
                     $("#saveFile").addClass("ui-state-disabled");
                     $("#saveFile_copy").addClass("ui-state-disabled");
                 } else {
@@ -98,14 +125,14 @@ $(document).ready(function () {
     });
 
     /*
-    $(document).on("keydown", function (e) {
-        e = e || window.event;
-        var closeBtnCurrent = parent.$(".ui-dialog-titlebar-close");
-        if (e.keyCode === 27 && closeBtnCurrent.length) {
-            closeBtnCurrent.trigger("mousedown");
-        }
-    });
-    */
+     $(document).on("keydown", function (e) {
+     e = e || window.event;
+     var closeBtnCurrent = parent.$(".ui-dialog-titlebar-close");
+     if (e.keyCode === 27 && closeBtnCurrent.length) {
+     closeBtnCurrent.trigger("mousedown");
+     }
+     });
+     */
 
     closeBtn.on("mousedown", function (e) {
         if (isChanged.html() !== "") {
@@ -124,8 +151,7 @@ $(document).ready(function () {
             closeOnContentClick: true,
             closeBtnInside: true,
             image: {
-                titleSrc: function(item) {
-                    //return unescape(item.el.attr("href"));
+                titleSrc: function (item) {
                     return item.el.text();
                 }
             },
