@@ -101,7 +101,7 @@
     padding-left: 6px;
 }
 
-/* more filetype icons... */
+/* more filetype icons */
 .php-file-tree .ext-txt a:before {
     font-family: FontAwesome;
     content: '\f0f6';

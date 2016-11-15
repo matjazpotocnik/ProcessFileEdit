@@ -43,10 +43,6 @@ class ProcessFileEdit extends Process {
 		$this->templatesPath = $directory = rtrim($this->wire('config')->paths->templates, '/\\');
 		$this->templateExtension = $this->wire('config')->templateExtension;
 		$this->rootPath = $this->wire('config')->paths->root;
-
-		//if(!extension_loaded('mbstring') || !function_exists('iconv')) {
-		//	$this->message("Support for mbstring and iconv is recommended.");
-		//}
 	}
 
 	public function ___execute() {
@@ -127,7 +123,7 @@ class ProcessFileEdit extends Process {
 			$this->fuel('breadcrumbs')->add(new Breadcrumb('./', $this->_('File Editor')));
 			$this->setFuel('processHeadline', sprintf($this->_("Edit file: %s"), $file));
 
-			$fileUTF8 = $this->toUTF8($displayFile);
+			$fileUTF8 = $this->toUTF8($displayFile, $this->encoding);
 			if($fileHandle = @fopen($file, "r+")) {
 				$fileContent = ((filesize($file) > 0) ? fread($fileHandle, filesize($file)) : '');
 				fclose($fileHandle);
@@ -319,19 +315,19 @@ class ProcessFileEdit extends Process {
 			$tree .= "<ul>";
 
 			foreach($filesArray as $file) {
-				$fileName = $this->toUTF8($file);
+				$fileName = $this->toUTF8($file, $this->encoding);
+
 				if(is_dir("$directory/$file")) {
 					// directory
 					$parentDir = "/" . str_replace($this->rootPath, "", $directory . "/"); // directory is without trailing slash
-					$dirPath = $this->toUTF8("$parentDir/$file/");
+					$dirPath = $this->toUTF8("$parentDir/$file/", $this->encoding);
 					$dirPath = str_replace("//", "/", $dirPath);
 					$tree .= "<li class='pft-d'><a data-p='$dirPath'>$fileName</a>";
 					$tree .= $this->php_file_tree_dir("$directory/$file", $extensions, $extFilter, "$parent/$file"); // no need to urlencode parent/file
 					$tree .= "</li>";
 				} else {
 					// file
-					//MP od $directory odstejes $this->dirPath in dobis $parent
-					//MP $parent = str_replace($this->dirPath, "", $directory);
+					// $parent = str_replace($this->dirPath, "", $directory);
 					$ext = strtolower(substr($file, strrpos($file, ".") + 1));
 					$link = str_replace("%2F", "/", rawurlencode("$parent/$file")); // to overcome bug/feature on apache
 					if(in_array($ext, array("jpg", "png", "gif", "bmp"))) {
@@ -398,17 +394,38 @@ class ProcessFileEdit extends Process {
 	}
 
 	/**
-	 * Try to convert string to UTF-8, not bulletproof, requires mbstring and iconv support
+	 *
+	 */
+	public function ___install() {
+		if(!extension_loaded('mbstring') || !function_exists('iconv')) {
+			$this->message("Support for mbstring and iconv is recommended.");
+		}
+	}
+
+
+	/**
+	 * Try to convert string to UTF-8, far from bulletproof, requires mbstring and iconv support
 	 *
 	 * @param string $str string to convert to UTF-8
+	 * @param string $encoding auto|ISO-8859-2|Windows-1250
 	 * @param boolean $c
 	 * @return string
 	 *
 	 */
-	private function toUTF8($str, $c = false) {
+	private function toUTF8($str, $encoding = 'auto', $c = false) {
 		// http://stackoverflow.com/questions/7979567/php-convert-any-string-to-utf-8-without-knowing-the-original-character-set-or
 		if(extension_loaded('mbstring') && function_exists('iconv')) {
-			$str = iconv(mb_detect_encoding($str, mb_detect_order(), true), 'UTF-8//TRANSLIT//IGNORE', $str);
+			if($encoding == 'auto') {
+				if(DIRECTORY_SEPARATOR != '/') {
+					// windows
+					$str = @iconv(mb_detect_encoding($str, mb_detect_order(), true), 'UTF-8', $str);
+				} else {
+					// linux
+					$str = @iconv('Windows-1250', 'UTF-8', $str); // wild guess!!! could be ISO-8859-2, UTF-8, ...
+				}
+			} else {
+				$str = @iconv($encoding, 'UTF-8', $str);
+			}
 		}
 		// replacement of % must be first!!!
 		if($c) $str = str_replace(array("%", "#", " ", "{", "}", "^", "+"), array("%25", "%23", "%20", "%7B", "%7D", "%5E", "%2B"), $str);

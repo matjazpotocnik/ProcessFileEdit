@@ -13,9 +13,11 @@ class ProcessFileEditConfig extends ModuleConfig {
 
 			array(
 				'name'        => 'dirPath',
-				'type'        => 'radios',
+				//'type'        => 'radios',
+				'type'        => 'select',
 				'label'       => $this->_('Directory Path'),
 				'description' => $this->_('Path to the directory from which to get files.'),
+				'columnWidth' => 50,
 				'required'    => true,
 				'options'     => array(
 					$this->config->paths->root => $this->config->paths->root,
@@ -25,6 +27,24 @@ class ProcessFileEditConfig extends ModuleConfig {
 				),
 				'value'       => $this->config->paths->site,
 			),
+
+			array(
+				'name'        => 'encoding',
+				//'type'        => 'radios',
+				'type'        => 'select',
+				'label'       => $this->_('File encoding'),
+				'description' => $this->_('In case file names are garbled, try different encoding.'),
+				'columnWidth' => 50,
+				'required'    => true,
+				'options'     => array(
+					'auto'         => 'Auto detect',
+					'ISO-8859-2'   => 'ISO-8859-2',
+					'Windows-1252' => 'Windows-1252',
+				),
+				'value'       => 'auto',
+			),
+
+
 
 			array(
 				'name'        => 'extensionsFilter',
@@ -38,7 +58,8 @@ class ProcessFileEditConfig extends ModuleConfig {
 
 			array(
 				'name'        => 'extFilter',
-				'type'        => 'radios',
+				//'type'        => 'radios',
+				'type'        => 'select',
 				'label'       => $this->_('Include or exclude extensions'),
 				'description' => $this->_('Select to include or exclude files with the extensions defined above.'),
 				'columnWidth' => 50,
@@ -48,6 +69,16 @@ class ProcessFileEditConfig extends ModuleConfig {
 					'1' 				=> $this->_('Exclude files with named extensions'),
 				),
 				'value'       => '0',
+			),
+
+			array(
+				'name'        => 'editorHeight',
+				'type'        => 'text',
+				'label'       => $this->_('Editor Height'),
+				'description' => $this->_('Set the height of the editor. Default is "auto", can be any height like "450px".'),
+				'columnWidth' => 50,
+				'required'    => false,
+				'value'       => 'auto',
 			),
 
 			array(
@@ -108,16 +139,6 @@ class ProcessFileEditConfig extends ModuleConfig {
 					'zenburn'                 => 'zenburn',
 				),
 				'value'       => 'default',
-			),
-
-			array(
-				'name'        => 'editorHeight',
-				'type'        => 'text',
-				'label'       => $this->_('Editor Height'),
-				'description' => $this->_('Set the height of the editor. Default is "auto", can be any height like "450px".'),
-				'columnWidth' => 50,
-				'required'    => false,
-				'value'       => 'auto',
 			),
 
 		));

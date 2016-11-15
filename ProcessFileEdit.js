@@ -29,8 +29,9 @@ $(document).ready(function () {
             $(this).addClass("active");
         }
 
-        var path = "#" + $(this).attr("data-p");
+        var path = $(this).attr("data-p");
         if (path && history.pushState) {
+            path =  "#" + path;
 
             //if (location.hash === encodeURI(path) || parent.hasClass("pft-d-open")) {
             if (location.hash === path || parent.hasClass("pft-d-open")) {
