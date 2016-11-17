@@ -394,6 +394,7 @@ class ProcessFileEdit extends Process {
 	}
 
 	/**
+	 * Check for mbstring and iconv support
 	 *
 	 */
 	public function ___install() {
@@ -407,7 +408,7 @@ class ProcessFileEdit extends Process {
 	 * Try to convert string to UTF-8, far from bulletproof, requires mbstring and iconv support
 	 *
 	 * @param string $str string to convert to UTF-8
-	 * @param string $encoding auto|ISO-8859-2|Windows-1250
+	 * @param string $encoding auto|ISO-8859-2|Windows-1250|Windows-1252|urldecode
 	 * @param boolean $c
 	 * @return string
 	 *
@@ -424,7 +425,8 @@ class ProcessFileEdit extends Process {
 					$str = @iconv('Windows-1250', 'UTF-8', $str); // wild guess!!! could be ISO-8859-2, UTF-8, ...
 				}
 			} else {
-				$str = @iconv($encoding, 'UTF-8', $str);
+				if($encoding == 'urldecode') $str = urldecode($str);
+				else $str = @iconv($encoding, 'UTF-8', $str);
 			}
 		}
 		// replacement of % must be first!!!

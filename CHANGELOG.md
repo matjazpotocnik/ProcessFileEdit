@@ -1,6 +1,9 @@
 # Changelog
 
-### 1.6.1 (2016-11-14)
+### 1.6.2 (2016-11-17)
+- add more encoding options
+
+### 1.6.1 (2016-11-15)
 - bug fix (reported by tpr)
 
 ### 1.6.0 (2016-11-14)

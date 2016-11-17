@@ -38,13 +38,13 @@ class ProcessFileEditConfig extends ModuleConfig {
 				'required'    => true,
 				'options'     => array(
 					'auto'         => 'Auto detect',
-					'ISO-8859-2'   => 'ISO-8859-2',
+					'Windows-1250' => 'Windows-1250',
 					'Windows-1252' => 'Windows-1252',
+					'ISO-8859-2'   => 'ISO-8859-2',
+					'urldecode'    => 'PHP\'s urldecode',
 				),
 				'value'       => 'auto',
 			),
-
-
 
 			array(
 				'name'        => 'extensionsFilter',
