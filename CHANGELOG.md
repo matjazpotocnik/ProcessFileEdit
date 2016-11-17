@@ -1,5 +1,8 @@
 # Changelog
 
+### 1.6.3 (2016-11-17)
+- add none as an encoding option
+
 ### 1.6.2 (2016-11-17)
 - add more encoding options
 

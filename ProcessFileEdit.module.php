@@ -84,7 +84,7 @@ class ProcessFileEdit extends Process {
 			$file = $this->dirPath . $filebase; // full file path in unix style
 
 			// check if file exist
-			if (!is_file($file)) $msg = sprintf($this->_('File %s not found.'), $file);
+			if(!is_file($file)) $msg = sprintf($this->_('File %s not found.'), $file);
 
 			if($msg != "") {
 				$this->error($msg); //this is not visible in modal edit
@@ -92,10 +92,12 @@ class ProcessFileEdit extends Process {
 			}
 
 			$displayFile = $file;
-			if(DIRECTORY_SEPARATOR != '/') $displayFile = str_replace('/', DIRECTORY_SEPARATOR, $displayFile); // replace slashes with backslashes on windows
+			// replace slashes with backslashes on windows
+			if(DIRECTORY_SEPARATOR != '/') $displayFile = str_replace('/', DIRECTORY_SEPARATOR, $displayFile);
 
 			if($this->wire('input')->post('saveFile') || $this->wire('input')->get('s')) {
-				// post->saveFile is present when submit button is not "hijacked" in javascript, while get->s is for save when editing in modal
+				// post->saveFile is present when submit button is not "hijacked" in javascript,
+				// while get->s is for save when editing in modal
 				if($fileHandle = @fopen($file, "w+")) {
 					//we can write to file
 					$content = fwrite($fileHandle, $this->wire('input')->post('editFile'));
@@ -137,7 +139,7 @@ class ProcessFileEdit extends Process {
 			}
 
 			$ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
-			switch ($ext) {
+			switch($ext) {
 				case 'php':
 				case 'module':
 				case 'inc':
@@ -425,7 +427,8 @@ class ProcessFileEdit extends Process {
 					$str = @iconv('Windows-1250', 'UTF-8', $str); // wild guess!!! could be ISO-8859-2, UTF-8, ...
 				}
 			} else {
-				if($encoding == 'urldecode') $str = urldecode($str);
+				if($encoding == 'urldecode') $str = @urldecode($str);
+				else if($encoding == 'none') $str = $str;
 				else $str = @iconv($encoding, 'UTF-8', $str);
 			}
 		}
@@ -506,7 +509,7 @@ class ProcessFileEdit extends Process {
 	private function isTemplateFile ($filename) {
 		$filename = basename($filename);
 		foreach(wire('templates') as $tpl) {
-			if ($tpl->flags !== 0) continue; // skip system templates
+			if($tpl->flags !== 0) continue; // skip system templates
 			if(basename($tpl->filename) == $filename) {
 				return array($tpl->name, wire('config')->urls->httpAdmin . 'setup/template/edit?id=' . $tpl->id);
 			}

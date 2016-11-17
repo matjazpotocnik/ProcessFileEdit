@@ -4,7 +4,6 @@
  * File Editor settings
  *
  */
-
 class ProcessFileEditConfig extends ModuleConfig {
 
 	public function __construct() {
@@ -13,7 +12,6 @@ class ProcessFileEditConfig extends ModuleConfig {
 
 			array(
 				'name'        => 'dirPath',
-				//'type'        => 'radios',
 				'type'        => 'select',
 				'label'       => $this->_('Directory Path'),
 				'description' => $this->_('Path to the directory from which to get files.'),
@@ -30,7 +28,6 @@ class ProcessFileEditConfig extends ModuleConfig {
 
 			array(
 				'name'        => 'encoding',
-				//'type'        => 'radios',
 				'type'        => 'select',
 				'label'       => $this->_('File encoding'),
 				'description' => $this->_('In case file names are garbled, try different encoding.'),
@@ -42,6 +39,7 @@ class ProcessFileEditConfig extends ModuleConfig {
 					'Windows-1252' => 'Windows-1252',
 					'ISO-8859-2'   => 'ISO-8859-2',
 					'urldecode'    => 'PHP\'s urldecode',
+					'none'         => 'none',
 				),
 				'value'       => 'auto',
 			),
