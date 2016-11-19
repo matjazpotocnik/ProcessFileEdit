@@ -6,6 +6,10 @@ file is an image, viewer is opened in modal. If file is used as a template, link
 to the template edit is provided. Intended primarily for superusers, give other
 users file-edit permission.
 
+This is not the replacement for full blown editor. Be aware that if you make
+changes to files that cause PW to throws an error in admin, you loose access to
+this module too and you will need some other means to access the file again!
+
 ### Directory path
 Path to the directory from which to display directory tree. By default it's set 
 to $config->paths->site
@@ -28,7 +32,7 @@ at http://modules.processwire.com/install-uninstall/
 
 ### License
 Copyright (c) 2016 Florea Banus George (https://github.com/f-b-g-m/ProcessFileEdit).  
-Fork by Matja&zcaron; Poto&ccaron;nik (https://github.com/matjazpotocnik/ProcessFileEdit).  
+Fork by Matja&#382; Poto&#269;nik (https://github.com/matjazpotocnik/ProcessFileEdit).  
 Big thanks to Roland Toth.  
 Support forum: https://processwire.com/talk/topic/14276-file-editor/
 

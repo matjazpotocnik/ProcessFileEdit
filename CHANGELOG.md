@@ -1,5 +1,8 @@
 # Changelog
 
+### 1.6.4 (2016-11-19)
+- fix when insttling the module would not create a page under setup branch (reported by adrian and fbg13)
+
 ### 1.6.3 (2016-11-17)
 - add none as an encoding option
 
