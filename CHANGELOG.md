@@ -1,5 +1,8 @@
 # Changelog
 
+### 1.6.5 (2016-11-19)
+- add link to codemirror theme demo (suggested by fbg13)
+
 ### 1.6.4 (2016-11-19)
 - fix when insttling the module would not create a page under setup branch (reported by adrian and fbg13)
 

@@ -83,7 +83,7 @@ class ProcessFileEditConfig extends ModuleConfig {
 				'name'        => 'theme',
 				'type'        => 'select',
 				'label'       => $this->_('Codemirror theme'),
-				'description' => $this->_('Select the theme used for editor.'),
+				'description' => $this->_('Select the theme used for editor **[demo](https://codemirror.net/demo/theme.html)**.'),
 				'columnWidth' => 50,
 				'required'    => true,
 				'options'     => array(

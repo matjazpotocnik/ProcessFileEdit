@@ -5,6 +5,7 @@
  *
  * A module for editing files (in the admin area).
  *
+ * @version 1.6.5
  * @author Florea Banus George
  * @author Matjaz Potocnik
  * @author Roland Toth
@@ -403,18 +404,7 @@ class ProcessFileEdit extends Process {
 	 *
 	 */
 	public function ___install() {
-		// if the module has it's own install method, then page is not added and you must do it by yourself
-		// protected function ___installPage($name = '', $parent = null, $title = '', $template = 'admin', $extras = array())
-		//'page' => array(
-		//	'name'   => 'file-editor',
-		//	'parent' => 'setup',
-		//	'title'  => 'Files Editor'
-		//),
-		try {
-			$this->installPage('file-editor', 'setup', 'Files Editor');
-		} catch(Exception $e) {
-			$this->error("Can't create a page.");
-		}
+		parent::___install();
 		if(!extension_loaded('mbstring') || !function_exists('iconv')) {
 			$this->message("Support for mbstring and iconv is recommended.");
 		}
