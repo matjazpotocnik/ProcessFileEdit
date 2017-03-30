@@ -5,7 +5,6 @@
  *
  * A module for editing files (in the admin area).
  *
- * @version 1.6.5
  * @author Florea Banus George
  * @author Matjaz Potocnik
  * @author Roland Toth
@@ -196,6 +195,7 @@ class ProcessFileEdit extends Process {
 
 			$h = "";
 			if($this->editorHeight) {
+				$h1 = ($this->wire('user')->admin_theme == "AdminThemeUikit") ? "150" : "125";
 				if($this->editorHeight == "auto" || $this->editorHeight == "") $h = "window.editor.setSize(null, $(window).height() - " . $h1 . "+'px');";
 				else $h = "window.editor.setSize(null, '$this->editorHeight');";
 			}
