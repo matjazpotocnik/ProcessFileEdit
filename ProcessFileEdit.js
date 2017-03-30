@@ -51,6 +51,7 @@ $(document).ready(function () {
 
     function setupCloneButton1() {
         // this is a copy of main.js from admin theme
+        // todo: make it work in AdminThemeUikit
 
         if ($("body").is(".modal") === false) {
             return; // prevent doubling in main.js

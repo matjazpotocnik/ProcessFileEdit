@@ -61,7 +61,7 @@ class ProcessFileEdit extends Process {
 		$this->dirPath = $this->sanitizePath($this->dirPath);
 
 		// check if path is a directory
-		if(!is_dir($this->dirPath)) $msg = sprintf($this->_('Directory %s not found.'), $this->dirPath);
+		if(!@is_dir($this->dirPath)) $msg = sprintf($this->_('Directory %s not found.'), $this->dirPath);
 
 		// prevent parent path notation ..
 		if(strpos($this->dirPath, '..') !== false) $msg = sprintf($this->_('Directory %s contains parent path (..) notation.'), $this->dirPath);
@@ -196,7 +196,7 @@ class ProcessFileEdit extends Process {
 
 			$h = "";
 			if($this->editorHeight) {
-				if($this->editorHeight == "auto" || $this->editorHeight == "") $h = "window.editor.setSize(null, $(window).height() - 125 +'px');";
+				if($this->editorHeight == "auto" || $this->editorHeight == "") $h = "window.editor.setSize(null, $(window).height() - " . $h1 . "+'px');";
 				else $h = "window.editor.setSize(null, '$this->editorHeight');";
 			}
 
@@ -298,7 +298,7 @@ class ProcessFileEdit extends Process {
 		// comment if statement if you want empty extensions array to return no files at all
 		if(!empty($extensions)) {
 			foreach(array_keys($filesArray) as $key) {
-				if(!is_dir("$directory/$filesArray[$key]")) {
+				if(!@is_dir("$directory/$filesArray[$key]")) {
 					$ext = substr($filesArray[$key], strrpos($filesArray[$key], ".") + 1);
 					if($extFilter == in_array($ext, $extensions)) unset($filesArray[$key]);
 				}
@@ -314,7 +314,7 @@ class ProcessFileEdit extends Process {
 			// Make directories first, then files
 			$fls = $dirs = array();
 			foreach($filesArray as $f) {
-				if(is_dir("$directory/$f")) $dirs[] = $f; else $fls[] = $f;
+				if(@is_dir("$directory/$f")) $dirs[] = $f; else $fls[] = $f;
 			}
 			$filesArray = array_merge($dirs, $fls);
 
@@ -323,7 +323,7 @@ class ProcessFileEdit extends Process {
 			foreach($filesArray as $file) {
 				$fileName = $this->toUTF8($file, $this->encoding);
 
-				if(is_dir("$directory/$file")) {
+				if(@is_dir("$directory/$file")) {
 					// directory
 					$parentDir = "/" . str_replace($this->rootPath, "", $directory . "/"); // directory is without trailing slash
 					$dirPath = $this->toUTF8("$parentDir/$file/", $this->encoding);
@@ -423,6 +423,7 @@ class ProcessFileEdit extends Process {
 	private function toUTF8($str, $encoding = 'auto', $c = false) {
 		// http://stackoverflow.com/questions/7979567/php-convert-any-string-to-utf-8-without-knowing-the-original-character-set-or
 		if(extension_loaded('mbstring') && function_exists('iconv')) {
+			//MP todo: don't iconv form UTF-8 to UTF-8!!!!
 			if($encoding == 'auto') {
 				if(DIRECTORY_SEPARATOR != '/') {
 					// windows

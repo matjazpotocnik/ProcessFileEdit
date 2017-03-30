@@ -1,10 +1,14 @@
 # Changelog
 
+### 1.6.6 (2017-03-11)
+- support for AdminThemeUikit
+- CodeMirror update to 5.24.2
+
 ### 1.6.5 (2016-11-19)
-- add link to codemirror theme demo (suggested by fbg13)
+- add link to CodeMirror theme demo (suggested by fbg13)
 
 ### 1.6.4 (2016-11-19)
-- fix when insttling the module would not create a page under setup branch (reported by adrian and fbg13)
+- fix when installing the module would not create a page under setup branch (reported by adrian and fbg13)
 
 ### 1.6.3 (2016-11-17)
 - add none as an encoding option
@@ -36,16 +40,16 @@
 - fix to adapt to changes in modal windows
 
 ### 1.5.1 (2016-11-06)
-- more codemirror language modes (suggested by tpr)
+- more CodeMirror language modes (suggested by tpr)
 
 ### 1.5 (2016-11-05)
 - warning about unsaved changes (suggested by tpr)
 - better wording about include/exclude filter (suggested by tpr)
 - better visual feedback on Save (suggested by tpr)
-- codemirror theme selection (suggested by tpr)
+- CodeMirror theme selection (suggested by tpr)
 - small speed improvement on directory tree generation
 - small enhancements and fixes
-- codemirror update to 5.20.2
+- CodeMirror update to 5.20.2
 
 ### 1.4 (2016-10-25)
 - bug fixes

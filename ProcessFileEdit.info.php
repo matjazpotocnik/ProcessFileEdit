@@ -3,7 +3,7 @@
 $info = array(
 	'title'   => 'Files Editor',
 	'summary' => _('Edit files'),
-	'version' => '1.6.5',
+	'version' => '1.6.6',
 	'author'  => 'Florea Banus George, Matja&#382; Poto&#269;nik, Roland Toth',
 	'icon'    => 'file-o',
 	'href'    => 'https://github.com/matjazpotocnik/ProcessFileEdit/',

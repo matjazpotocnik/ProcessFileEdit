@@ -5,6 +5,38 @@
 
 */
 
+.php-file-tree ul, .php-file-tree li {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* for AdminThemeUikit begin */
+#pw-content-body h3 {
+    font-size: 1.25rem;
+    line-height: inherit;
+    margin-bottom: 10px;
+}
+
+.CodeMirror {
+    font-size: 13px;
+}
+
+.InputfieldIsOffset {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.modal .uk-margin-large-bottom {
+    margin-bottom: 10px!important;
+}
+
+h1.uk-margin-remove-top {
+    font-size: 1.25rem;
+    line-height: inherit;
+}
+/* for AdminThemeUikit end */
+
 /* Hide all subfolders at startup */
 .php-file-tree .pft-d:not(.pft-d-open) > ul {
     display: none;
@@ -174,6 +206,7 @@
 
 .modal #editForm {
     margin-bottom: 0 !important;
+    margin-top: 0 !important;
 }
 
 .mfp-title {
