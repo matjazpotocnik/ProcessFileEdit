@@ -48,6 +48,32 @@ class ProcessFileEdit extends Process {
 		$this->rootPath = $this->wire('config')->paths->root;
 	}
 
+    /**
+     * Handles changing line endings to the required style...
+     */
+    protected function handleLineEndings($content) {
+        $has_cr = false !== strpos($content, "\r");
+        $has_nl = false !== strpos($content, "\n");
+
+        $is_win = $has_cr && $has_nl;
+        $is_mac = $has_cr && !$has_nl;
+
+        $target_ending = $this->lineEndings;
+
+        if ($is_win) {
+            if ('mac' == $target_ending) return str_replace("\n", '',     $content);
+            if ('nix' == $target_ending) return str_replace("\r", '',     $content);
+        } else if ($is_mac) {
+            if ('win' == $target_ending) return str_replace("\r", "\r\n", $content);
+            if ('nix' == $target_ending) return str_replace("\r", "\n",   $content);
+        } else {
+            if ('win' == $target_ending) return str_replace("\n", "\r\n", $content);
+            if ('mac' == $target_ending) return str_replace("\n", "\r",   $content);
+        }
+
+        return $content;
+    }
+
 	public function ___execute() {
 
 		if(!$this->wire('user')->isSuperuser() && !$this->wire('user')->hasPermission('file-editor')) throw new WirePermissionException($this->_('Insufficient permissions.'));
@@ -103,7 +129,11 @@ class ProcessFileEdit extends Process {
 				// while get->s is for save when editing in modal
 				if($fileHandle = @fopen($file, "w+")) {
 					//we can write to file
-					$content = fwrite($fileHandle, $this->wire('input')->post('editFile'));
+					$raw     = $this->wire('input')->post('editFile');
+					$content = $this->handleLineEndings($raw);
+
+
+					$content = fwrite($fileHandle, $content);
 					fclose($fileHandle);
 					if($this->wire('input')->get('s')) {
 						return ""; // empty string means there is no error
