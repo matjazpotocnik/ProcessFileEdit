@@ -61,14 +61,14 @@ class ProcessFileEdit extends Process {
         $target_ending = $this->lineEndings;
 
         if ($is_win) {
-            if ('mac' == $target_ending) $content = str_replace("\n", '',     $content);
-            if ('nix' == $target_ending) $content = str_replace("\r", '',     $content);
+            if ('mac' == $target_ending) return str_replace("\n", '',     $content);
+            if ('nix' == $target_ending) return str_replace("\r", '',     $content);
         } else if ($is_mac) {
-            if ('win' == $target_ending) $content = str_replace("\r", "\r\n", $content);
-            if ('nix' == $target_ending) $content = str_replace("\r", "\n",   $content);
+            if ('win' == $target_ending) return str_replace("\r", "\r\n", $content);
+            if ('nix' == $target_ending) return str_replace("\r", "\n",   $content);
         } else {
-            if ('win' == $target_ending) $content = str_replace("\n", "\r\n", $content);
-            if ('mac' == $target_ending) $content = str_replace("\n", "\r",   $content);
+            if ('win' == $target_ending) return str_replace("\n", "\r\n", $content);
+            if ('mac' == $target_ending) return str_replace("\n", "\r",   $content);
         }
 
         return $content;
