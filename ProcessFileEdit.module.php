@@ -57,7 +57,6 @@ class ProcessFileEdit extends Process {
 
         $is_win = $has_cr && $has_nl;
         $is_mac = $has_cr;
-        $is_nix = $has_nl;
 
         $target_ending = $this->lineEndings;
 
