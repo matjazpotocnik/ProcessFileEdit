@@ -5,7 +5,7 @@ $info = array(
 	'summary' => _('Edit files'),
 	'version' => '1.6.7',
 	'author'  => 'Florea Banus George, Matja&#382; Poto&#269;nik, Roland Toth',
-	'icon'    => 'file-o',
+	'icon'    => 'pencil-square-o',
 	'href'    => 'https://github.com/matjazpotocnik/ProcessFileEdit/',
 	'requires'  => 'ProcessWire>=2.5.5, PHP>=5.3.8',
 	'permission'  => 'file-editor',
