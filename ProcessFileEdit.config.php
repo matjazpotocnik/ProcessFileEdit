@@ -6,6 +6,33 @@
  */
 class ProcessFileEditConfig extends ModuleConfig {
 
+    protected static function scanForSubdirs($path, &$options) {
+        $files = array_diff(scandir($path), array('.','..'));
+        foreach ($files as $f) {
+            if (is_dir("$path$f")) {
+                $options["$path$f"] = "$path$f";
+                self::scanForSubdirs("$path$f".DIRECTORY_SEPARATOR, $options);
+            }
+        }
+    }
+
+    protected static function getDirPathOptions($paths) {
+        $options = array(
+            $paths->root => $paths->root,
+            $paths->site => $paths->site,
+            $paths->templates => $paths->templates,
+            $paths->siteModules => $paths->siteModules,
+        );
+
+        if (function_exists('scandir')) {
+            self::scanForSubdirs($paths->templates, $options);
+        }
+
+        return $options;
+    }
+
+
+
 	public function __construct() {
 
 		$this->add(array(
@@ -17,12 +44,7 @@ class ProcessFileEditConfig extends ModuleConfig {
 				'description' => $this->_('Path to the directory from which to get files.'),
 				'columnWidth' => 50,
 				'required'    => true,
-				'options'     => array(
-					$this->config->paths->root => $this->config->paths->root,
-					$this->config->paths->site => $this->config->paths->site,
-					$this->config->paths->templates => $this->config->paths->templates,
-					$this->config->paths->siteModules => $this->config->paths->siteModules,
-				),
+				'options'     => self::getDirPathOptions($this->config->paths),
 				'value'       => $this->config->paths->site,
 			),
 
