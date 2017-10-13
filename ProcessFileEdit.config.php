@@ -31,7 +31,7 @@ class ProcessFileEditConfig extends ModuleConfig {
 				'type'        => 'select',
 				'label'       => $this->_('File encoding'),
 				'description' => $this->_('In case file names are garbled, try different encoding.'),
-				'columnWidth' => 50,
+				'columnWidth' => 30,
 				'required'    => true,
 				'options'     => array(
 					'auto'         => 'Auto detect',
@@ -42,6 +42,22 @@ class ProcessFileEditConfig extends ModuleConfig {
 					'none'         => 'none',
 				),
 				'value'       => 'auto',
+			),
+
+			array(
+				'name'        => 'lineEndings',
+				'type'        => 'select',
+				'label'       => $this->_('Line Endings'),
+				'description' => $this->_('Type of line ending to use when saving.'),
+				'notes'       => $this->_('Default is Linux (\n).'),
+				'columnWidth' => 20,
+				'required'    => true,
+				'options'     => array(
+					'win'           => 'Windows (\r\n)',
+					'mac'           => 'Mac (\r)',
+					'nix'           => 'Linux (\n)',
+				),
+				'value'       => 'nix',
 			),
 
 			array(
