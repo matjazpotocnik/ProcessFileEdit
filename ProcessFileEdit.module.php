@@ -5,12 +5,13 @@
  *
  * A module for editing files (in the admin area).
  *
+ * @version 1.6.7
  * @author Florea Banus George
  * @author Matjaz Potocnik
  * @author Roland Toth
  * @link https://github.com/matjazpotocnik/ProcessFileEdit
  *
- * ProcessWire 2.x/3.x, Copyright 2016 by Ryan Cramer
+ * ProcessWire 2.x/3.x, Copyright 2017 by Ryan Cramer
  * Licensed under GNU/GPL v2
  *
  * https://processwire.com
@@ -46,6 +47,62 @@ class ProcessFileEdit extends Process {
 		$this->templatesPath = $directory = rtrim($this->wire('config')->paths->templates, '/\\');
 		$this->templateExtension = $this->wire('config')->templateExtension;
 		$this->rootPath = $this->wire('config')->paths->root;
+	}
+
+	/**
+	 * Try to detect line endings based on presence of \r\n cahracters.
+	 *
+	 * @param string $content
+	 * @return string "win", "nix", "mac" or ""
+	 *
+	 */
+	protected function detect_newline_type($content) {
+		//https://stackoverflow.com/questions/11066857/detect-eol-type-using-php
+		$arr = array_count_values(
+							explode(
+								' ',
+								preg_replace(
+									'/[^\r\n]*(\r\n|\n|\r)/',
+									'\1 ',
+									$content
+								)
+							)
+					);
+		arsort($arr);
+		$k = key($arr);
+		if($k == "\r\n") return "win";
+		if($k == "\n") return "nix";
+		if($k == "\r") return "mac";
+		return "";
+	}
+
+	/**
+	 * Handles changing line endings to the required style.
+	 *
+	 * @param string $content file content
+	 * @param string $lineEnding original file's line ending
+	 * @return string
+	 *
+	 */
+	protected function handleLineEndings($content, $lineEnding = "") {
+		$target_ending = $this->lineEndings; // from module setup
+
+		if ('none' == $target_ending) return $content;
+		if ('auto' == $target_ending) $target_ending = $lineEnding;
+
+		$currentLineEnding = $this->detect_newline_type($content);
+		if ($currentLineEnding == 'win') {
+			if ('mac' == $target_ending) return str_replace("\n", '',     $content);
+			if ('nix' == $target_ending) return str_replace("\r", '',     $content);
+		} else if ($currentLineEnding == 'mac') {
+			if ('win' == $target_ending) return str_replace("\r", "\r\n", $content);
+			if ('nix' == $target_ending) return str_replace("\r", "\n",   $content);
+		} else if ($currentLineEnding == 'nix'){
+			if ('win' == $target_ending) return str_replace("\n", "\r\n", $content);
+			if ('mac' == $target_ending) return str_replace("\n", "\r",   $content);
+		}
+
+		return $content;
 	}
 
 	public function ___execute() {
@@ -101,9 +158,20 @@ class ProcessFileEdit extends Process {
 			if($this->wire('input')->post('saveFile') || $this->wire('input')->get('s')) {
 				// post->saveFile is present when submit button is not "hijacked" in javascript,
 				// while get->s is for save when editing in modal
+
+				// try to detect original line endings
+				$lineEnding = "";
+				if($fileHandle = @fopen($file, "r")) {
+					$line = fgets($fileHandle);
+					$lineEnding = $this->detect_newline_type($line);
+					fclose($fileHandle);
+				}
+
 				if($fileHandle = @fopen($file, "w+")) {
 					//we can write to file
-					$content = fwrite($fileHandle, $this->wire('input')->post('editFile'));
+					$raw = $this->wire('input')->post('editFile');
+					$content = $this->handleLineEndings($raw, $lineEnding);
+					$content = fwrite($fileHandle, $content);
 					fclose($fileHandle);
 					if($this->wire('input')->get('s')) {
 						return ""; // empty string means there is no error
@@ -410,7 +478,6 @@ class ProcessFileEdit extends Process {
 		}
 	}
 
-
 	/**
 	 * Try to convert string to UTF-8, far from bulletproof, requires mbstring and iconv support
 	 *
@@ -442,7 +509,6 @@ class ProcessFileEdit extends Process {
 		if($c) $str = str_replace(array("%", "#", " ", "{", "}", "^", "+"), array("%25", "%23", "%20", "%7B", "%7D", "%5E", "%2B"), $str);
 		return $str;
 	}
-
 
 	/**
 	 * Sanitize directory/file path:
@@ -481,7 +547,7 @@ class ProcessFileEdit extends Process {
 	 * Convert $config->paths->key to $config->urls->key
 	 * @param string $path eg. $config->paths->templates
 	 * @param array $pathTypes eg. array('site','templates'), if not specified, array is constructed from $config->paths
-	 * @return string path converted tor url, empty string if path not found
+	 * @return string path converted to url, empty string if path not found
 	 *
 	 */
 	private function convertPathToUrl($path, $pathTypes = array()) {
@@ -508,7 +574,7 @@ class ProcessFileEdit extends Process {
 
 	/**
 	 * Check if filename is used as a template file
-	 * @param string $filenam with or without path
+	 * @param string $filename with or without path
 	 * @return array|boolean array (templatename, adminediturl), false otherwise
 	 *
 	 */

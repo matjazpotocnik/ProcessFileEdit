@@ -1,5 +1,11 @@
 # Changelog
 
+### 1.6.7 (2017-10-15)
+- Control for line endings (Windows, Mac or Linux) (suggested by Netcarver)
+- Extend directory start list with a scan of the templates subfolder (suggested by Netcarver)
+- Change icon to pencil-square-o (suggested by Netcarver)
+- CodeMirror update to 5.30.0
+
 ### 1.6.6 (2017-03-11)
 - support for AdminThemeUikit
 - CodeMirror update to 5.24.2

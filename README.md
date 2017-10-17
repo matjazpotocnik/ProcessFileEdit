@@ -14,6 +14,19 @@ this module too and you will need some other means to access the file again!
 Path to the directory from which to display directory tree. By default it's set 
 to $config->paths->site
 
+### File encoding
+Encoding used when saving file name. Different operating systems and underlying
+filesystem use different ways of how file names are stored on the file system.
+This setting allows you to overcome sitautions when file name become garbled after
+save operation. Options are: 'Auto detect' (this is default), 'Windows-1250',
+'Windows-1252', 'ISO-8859-2', 'PHP\'s urldecode' and 'none'.
+
+### Line endings
+Type of line endings to use when saving. CodeMirror returns end-of-line as
+Windows style end-of-line (\r\n). Here you can set up how to handle this. Options are
+'Auto' (this is default) detect original line endings and apply them on save. You may
+manually set line endings to Windows (\r\n), Linux (\n) or Mac (\r). 
+
 ### Extensions Filter
 Comma separated list of extensions to filter files by. By default "php,module,js,css".
 
