@@ -169,6 +169,9 @@ class ProcessFileEdit extends Process {
 
 				if(trim($this->backupExtension) !== "") {
 					$f = str_replace("/", "/.", $filebase);
+					if (0 !== strpos($this->backupExtension, '.')) {
+						$this->backupExtension = '.' . $this->backupExtension;
+					}
 					$dest = $this->dirPath . $f . $this->backupExtension;
 					copy($file, $dest);
 				}
