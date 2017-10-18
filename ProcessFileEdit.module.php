@@ -167,7 +167,11 @@ class ProcessFileEdit extends Process {
 					fclose($fileHandle);
 				}
 
-				if(trim($this->backupExtension) !== "") @copy($file, $file . $this->backupExtension);
+				if(trim($this->backupExtension) !== "") {
+					$f = str_replace("/", "/.", $filebase);
+					$dest = $this->dirPath . $f . $this->backupExtension;
+					copy($file, $dest);
+				}
 
 				if($fileHandle = @fopen($file, "w+")) {
 					//we can write to file
