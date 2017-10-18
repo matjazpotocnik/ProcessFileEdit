@@ -170,7 +170,7 @@ class ProcessFileEdit extends Process {
 				if(trim($this->backupExtension) !== "") {
 					$f = str_replace("/", "/.", $filebase);
 					$dest = $this->dirPath . $f . $this->backupExtension;
-					copy($file, $dest);
+					@copy($file, $dest);
 				}
 
 				if($fileHandle = @fopen($file, "w+")) {
