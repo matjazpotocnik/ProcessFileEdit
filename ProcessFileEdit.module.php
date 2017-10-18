@@ -5,7 +5,7 @@
  *
  * A module for editing files (in the admin area).
  *
- * @version 1.6.8
+ * @version 1.6.9
  * @author Florea Banus George
  * @author Matjaz Potocnik
  * @author Roland Toth
@@ -169,8 +169,11 @@ class ProcessFileEdit extends Process {
 
 				if(trim($this->backupExtension) !== "") {
 					$f = str_replace("/", "/.", $filebase);
+					if (0 !== strpos($this->backupExtension, '.')) {
+						$this->backupExtension = '.' . $this->backupExtension;
+ 					}
 					$dest = $this->dirPath . $f . $this->backupExtension;
-					copy($file, $dest);
+					@copy($file, $dest);
 				}
 
 				if($fileHandle = @fopen($file, "w+")) {

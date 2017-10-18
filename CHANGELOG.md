@@ -1,5 +1,9 @@
 # Changelog
 
+### 1.6.9 (2017-10-18)
+- prepend a '.' to the backup extension, if needed (suggested by Netcarver)
+- prevent notices on file-save if backups enabled (suggested by Netcarver)
+
 ### 1.6.8 (2017-10-18)
 - option to backup edited file (suggested by Netcarver)
 
