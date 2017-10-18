@@ -24,18 +24,22 @@ save operation. Options are: 'Auto detect' (this is default), 'Windows-1250',
 ### Line endings
 Type of line endings to use when saving. CodeMirror returns end-of-line as
 Windows style end-of-line (\r\n). Here you can set up how to handle this. Options are
-'Auto' (this is default) detect original line endings and apply them on save. You may
-manually set line endings to Windows (\r\n), Linux (\n) or Mac (\r). 
+'Auto detect' (this is default) detect original line endings and apply them on save. You
+may manually set line endings to Windows (\r\n), Linux (\n) or Mac (\r). 
 
-### Extensions Filter
-Comma separated list of extensions to filter files by. By default "php,module,js,css".
+### Extensions filter
+Comma separated list of extensions to filter files by, default is "php,module,js,css".
 
 ### Include or exclude extensions
 Select to include or exclude files based on the extensions defined in Extension
 Filter. Include is default, so files matching extensions will be displayed in
 directory/file tree.
 
-### Editor Height
+### Backup extension
+Extension to use when backing up edited file, for example ".bak". Leave empty for no
+backup (this is default).
+
+### Editor height
 The height of the editor textarea, default is "auto", can be any height like "450px".
 
 ### Installation

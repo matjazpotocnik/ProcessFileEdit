@@ -58,7 +58,7 @@ class ProcessFileEditConfig extends ModuleConfig {
 			array(
 				'name'        => 'dirPath',
 				'type'        => 'select',
-				'label'       => $this->_('Directory Path'),
+				'label'       => $this->_('Directory path'),
 				'description' => $this->_('Path to the directory from which to get files.'),
 				'columnWidth' => 50,
 				'required'    => true,
@@ -88,13 +88,13 @@ class ProcessFileEditConfig extends ModuleConfig {
 			array(
 				'name'        => 'lineEndings',
 				'type'        => 'select',
-				'label'       => $this->_('Line Endings'),
+				'label'       => $this->_('Line endings'),
 				'description' => $this->_('Type of line ending to use when saving.'),
 				//'notes'       => $this->_('Default is Auto.'),
 				'columnWidth' => 25,
 				'required'    => true,
 				'options'     => array(
-					'auto'          => 'Auto',
+					'auto'          => 'Auto detect',
 					'win'           => 'Windows (\r\n)',
 					'mac'           => 'Mac (\r)',
 					'nix'           => 'Linux (\n)',
@@ -106,7 +106,7 @@ class ProcessFileEditConfig extends ModuleConfig {
 			array(
 				'name'        => 'extensionsFilter',
 				'type'        => 'text',
-				'label'       => $this->_('Extensions Filter'),
+				'label'       => $this->_('Extensions filter'),
 				'description' => $this->_('Comma separated list of extensions to filter files by. Example: "php,module,js,css".'),
 				'columnWidth' => 50,
 				'required'    => true,
@@ -119,7 +119,7 @@ class ProcessFileEditConfig extends ModuleConfig {
 				'type'        => 'select',
 				'label'       => $this->_('Include or exclude extensions'),
 				'description' => $this->_('Select to include or exclude files with the extensions defined above.'),
-				'columnWidth' => 50,
+				'columnWidth' => 25,
 				'required'    => true,
 				'options'     => array(
 					'0'             => $this->_('Include files with named extensions'),
@@ -129,9 +129,19 @@ class ProcessFileEditConfig extends ModuleConfig {
 			),
 
 			array(
+				'name'        => 'backupExtension',
+				'type'        => 'text',
+				'label'       => $this->_('Backup extension'),
+				'description' => $this->_('Extension to use when backing up edited file. Leave empty for no backup.'),
+				'columnWidth' => 25,
+				'required'    => false,
+				'value'       => '',
+			),
+
+			array(
 				'name'        => 'editorHeight',
 				'type'        => 'text',
-				'label'       => $this->_('Editor Height'),
+				'label'       => $this->_('Editor height'),
 				'description' => $this->_('Set the height of the editor. Default is "auto", can be any height like "450px".'),
 				'columnWidth' => 50,
 				'required'    => false,
