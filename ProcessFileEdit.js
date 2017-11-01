@@ -50,8 +50,7 @@ $(document).ready(function () {
     });
 
     function setupCloneButton1() {
-        // this is a copy of main.js from admin theme
-        // todo: make it work in AdminThemeUikit
+        // this is a copy of main.js from admin theme default
 
         if ($("body").is(".modal") === false) {
             return; // prevent doubling in main.js
@@ -68,7 +67,9 @@ $(document).ready(function () {
         }
 
         var $head = $("#head_button");
-        //MP if($head.length == 0) $head = $("<div id='head_button'></div>").prependTo("#breadcrumbs .container");
+        if ($head.length === 0) {
+            $head = $("#pw-content-head-buttons"); //MP for AdminThemeUikit
+        }
         if ($head.length === 0) {
             $head = $("<div id='head_button'></div>").prependTo("#content .container"); // now #pw-content .pw-container
         }
@@ -93,6 +94,7 @@ $(document).ready(function () {
         $head.show();
     }
 
+    // there is no head_button in modal view, so create it
     setupCloneButton1();
 
     var saveButton = $("#saveFile");

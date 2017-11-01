@@ -13,9 +13,11 @@
 
 /* for AdminThemeUikit begin */
 #pw-content-body h3 {
-    font-size: 1.25rem;
-    line-height: inherit;
-    margin-bottom: 10px;
+    margin-bottom: 18px;
+}
+
+#pw-content-head-buttons {
+    margin-bottom: 0;
 }
 
 .CodeMirror {

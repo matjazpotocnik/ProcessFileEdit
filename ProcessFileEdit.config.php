@@ -7,13 +7,11 @@
 class ProcessFileEditConfig extends ModuleConfig {
 
 
-
 	/**
 	 * Recursive function to extend starting directory selection to include template subdirs
 	 *
 	 * @param string $path starting directory
 	 * @param array $options
-	 * @return array $options
 	 *
 	 */
 	protected static function scanForSubdirs($path, &$options) {
@@ -71,7 +69,6 @@ class ProcessFileEditConfig extends ModuleConfig {
 				'type'        => 'select',
 				'label'       => $this->_('File encoding'),
 				'description' => $this->_('Encoding used when saving file name.'),
-				//'notes' => $this->_('In case file names are garbled, try different encoding.'),
 				'columnWidth' => 25,
 				'required'    => true,
 				'options'     => array(
@@ -90,7 +87,6 @@ class ProcessFileEditConfig extends ModuleConfig {
 				'type'        => 'select',
 				'label'       => $this->_('Line endings'),
 				'description' => $this->_('Type of line ending to use when saving.'),
-				//'notes'       => $this->_('Default is Auto.'),
 				'columnWidth' => 25,
 				'required'    => true,
 				'options'     => array(
@@ -115,7 +111,6 @@ class ProcessFileEditConfig extends ModuleConfig {
 
 			array(
 				'name'        => 'extFilter',
-				//'type'        => 'radios',
 				'type'        => 'select',
 				'label'       => $this->_('Include or exclude extensions'),
 				'description' => $this->_('Select to include or exclude files with the extensions defined above.'),

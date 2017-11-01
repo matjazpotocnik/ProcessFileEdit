@@ -5,7 +5,7 @@
  *
  * A module for editing files (in the admin area).
  *
- * @version 1.6.9
+ * @version 1.7.0
  * @author Florea Banus George
  * @author Matjaz Potocnik
  * @author Roland Toth
@@ -87,19 +87,19 @@ class ProcessFileEdit extends Process {
 	protected function handleLineEndings($content, $lineEnding = "") {
 		$target_ending = $this->lineEndings; // from module setup
 
-		if ('none' == $target_ending) return $content;
-		if ('auto' == $target_ending) $target_ending = $lineEnding;
+		if('none' == $target_ending) return $content;
+		if('auto' == $target_ending) $target_ending = $lineEnding;
 
 		$currentLineEnding = $this->detect_newline_type($content);
-		if ($currentLineEnding == 'win') {
-			if ('mac' == $target_ending) return str_replace("\n", '',     $content);
-			if ('nix' == $target_ending) return str_replace("\r", '',     $content);
-		} else if ($currentLineEnding == 'mac') {
-			if ('win' == $target_ending) return str_replace("\r", "\r\n", $content);
-			if ('nix' == $target_ending) return str_replace("\r", "\n",   $content);
-		} else if ($currentLineEnding == 'nix'){
-			if ('win' == $target_ending) return str_replace("\n", "\r\n", $content);
-			if ('mac' == $target_ending) return str_replace("\n", "\r",   $content);
+		if($currentLineEnding == 'win') {
+			if('mac' == $target_ending) return str_replace("\n", '',     $content);
+			if('nix' == $target_ending) return str_replace("\r", '',     $content);
+		} else if($currentLineEnding == 'mac') {
+			if('win' == $target_ending) return str_replace("\r", "\r\n", $content);
+			if('nix' == $target_ending) return str_replace("\r", "\n",   $content);
+		} else if($currentLineEnding == 'nix'){
+			if('win' == $target_ending) return str_replace("\n", "\r\n", $content);
+			if('mac' == $target_ending) return str_replace("\n", "\r",   $content);
 		}
 
 		return $content;
@@ -169,7 +169,7 @@ class ProcessFileEdit extends Process {
 
 				if(trim($this->backupExtension) !== "") {
 					$f = str_replace("/", "/.", $filebase);
-					if (0 !== strpos($this->backupExtension, '.')) {
+					if(0 !== strpos($this->backupExtension, '.')) {
 						$this->backupExtension = '.' . $this->backupExtension;
  					}
 					$dest = $this->dirPath . $f . $this->backupExtension;
@@ -177,7 +177,7 @@ class ProcessFileEdit extends Process {
 				}
 
 				if($fileHandle = @fopen($file, "w+")) {
-					//we can write to file
+					// we can write to file
 					$raw = $this->wire('input')->post('editFile');
 					$content = $this->handleLineEndings($raw, $lineEnding);
 					$content = fwrite($fileHandle, $content);
@@ -250,29 +250,29 @@ class ProcessFileEdit extends Process {
 			};
 
 			$config = $this->wire('config');
-			$moduleRoot = $config->urls->siteModules . __CLASS__ . "/";
-			$config->scripts->add("{$moduleRoot}codemirror/lib/codemirror.js");
-			$config->scripts->add("{$moduleRoot}codemirror/mode/clike/clike.js");
-			$config->scripts->add("{$moduleRoot}codemirror/mode/xml/xml.js");
-			$config->scripts->add("{$moduleRoot}codemirror/mode/javascript/javascript.js");
-			$config->scripts->add("{$moduleRoot}codemirror/mode/css/css.js");
-			$config->scripts->add("{$moduleRoot}codemirror/mode/htmlmixed/htmlmixed.js"); // depends on XML, JavaScript and CSS modes
-			$config->scripts->add("{$moduleRoot}codemirror/mode/php/php.js"); // depends on XML, JavaScript, CSS, HTMLMixed and C-like modes
-			$config->scripts->add("{$moduleRoot}codemirror/mode/sql/sql.js");
-			$config->scripts->add("{$moduleRoot}codemirror/mode/markdown/markdown.js");
-			$config->scripts->add("{$moduleRoot}codemirror/addon/search/search.js"); // https://codemirror.net/demo/search.html
-			$config->scripts->add("{$moduleRoot}codemirror/addon/search/searchcursor.js");
-			$config->scripts->add("{$moduleRoot}codemirror/addon/search/jump-to-line.js");
-			$config->scripts->add("{$moduleRoot}codemirror/addon/dialog/dialog.js");
-			$config->scripts->add("{$moduleRoot}codemirror/addon/selection/active-line.js");
-			$config->scripts->add("{$moduleRoot}codemirror/addon/edit/matchbrackets.js");
-			$config->styles->add ("{$moduleRoot}codemirror/lib/codemirror.css");
-			$config->styles->add ("{$moduleRoot}codemirror/addon/dialog/dialog.css");
-			if($this->theme != "default") $config->styles->add ("{$moduleRoot}codemirror/theme/{$this->theme}.css");
+			$codemirror = $config->urls->siteModules . __CLASS__ . "/codemirror/";
+			$config->scripts->add("{$codemirror}lib/codemirror.js");
+			$config->scripts->add("{$codemirror}mode/clike/clike.js");
+			$config->scripts->add("{$codemirror}mode/xml/xml.js");
+			$config->scripts->add("{$codemirror}mode/javascript/javascript.js");
+			$config->scripts->add("{$codemirror}mode/css/css.js");
+			$config->scripts->add("{$codemirror}mode/htmlmixed/htmlmixed.js"); // depends on XML, JavaScript and CSS modes
+			$config->scripts->add("{$codemirror}mode/php/php.js"); // depends on XML, JavaScript, CSS, HTMLMixed and C-like modes
+			$config->scripts->add("{$codemirror}mode/sql/sql.js");
+			$config->scripts->add("{$codemirror}mode/markdown/markdown.js");
+			$config->scripts->add("{$codemirror}addon/search/search.js"); // https://codemirror.net/demo/search.html
+			$config->scripts->add("{$codemirror}addon/search/searchcursor.js");
+			$config->scripts->add("{$codemirror}addon/search/jump-to-line.js");
+			$config->scripts->add("{$codemirror}addon/dialog/dialog.js");
+			$config->scripts->add("{$codemirror}addon/selection/active-line.js");
+			$config->scripts->add("{$codemirror}addon/edit/matchbrackets.js");
+			$config->styles->add ("{$codemirror}lib/codemirror.css");
+			$config->styles->add ("{$codemirror}addon/dialog/dialog.css");
+			if($this->theme != "default") $config->styles->add ("{$codemirror}theme/{$this->theme}.css");
 
 			$h = "";
 			if($this->editorHeight) {
-				$h1 = ($this->wire('user')->admin_theme == "AdminThemeUikit") ? "150" : "125";
+				$h1 = ($this->wire('user')->admin_theme == "AdminThemeUikit") ? "160" : "125";
 				if($this->editorHeight == "auto" || $this->editorHeight == "") $h = "window.editor.setSize(null, $(window).height() - " . $h1 . "+'px');";
 				else $h = "window.editor.setSize(null, '$this->editorHeight');";
 			}
@@ -554,6 +554,7 @@ class ProcessFileEdit extends Process {
 
 	/**
 	 * Convert $config->paths->key to $config->urls->key
+	 *
 	 * @param string $path eg. $config->paths->templates
 	 * @param array $pathTypes eg. array('site','templates'), if not specified, array is constructed from $config->paths
 	 * @return string path converted to url, empty string if path not found
@@ -583,11 +584,12 @@ class ProcessFileEdit extends Process {
 
 	/**
 	 * Check if filename is used as a template file
+	 *
 	 * @param string $filename with or without path
 	 * @return array|boolean array (templatename, adminediturl), false otherwise
 	 *
 	 */
-	private function isTemplateFile ($filename) {
+	private function isTemplateFile($filename) {
 		$filename = basename($filename);
 		foreach(wire('templates') as $tpl) {
 			if($tpl->flags !== 0) continue; // skip system templates

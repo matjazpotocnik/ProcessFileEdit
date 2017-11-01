@@ -1,5 +1,9 @@
 # Changelog
 
+### 1.7.0 (2017-11-01)
+- support for AdminThemeUikit (add save button to head)
+- CodeMirror update to 5.31.0
+
 ### 1.6.9 (2017-10-18)
 - prepend a '.' to the backup extension, if needed (suggested by Netcarver)
 - prevent notices on file-save if backups enabled (suggested by Netcarver)
