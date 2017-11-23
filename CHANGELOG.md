@@ -1,5 +1,10 @@
 # Changelog
 
+### 1.7.1 (2017-11-23)
+- CodeMirror update to 5.32.0
+- added codefolding addon for CodeMirror
+- minor code cleanup
+
 ### 1.7.0 (2017-11-01)
 - support for AdminThemeUikit (add save button to head)
 - CodeMirror update to 5.31.0

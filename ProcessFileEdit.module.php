@@ -5,7 +5,7 @@
  *
  * A module for editing files (in the admin area).
  *
- * @version 1.7.0
+ * @version 1.7.1
  * @author Florea Banus George
  * @author Matjaz Potocnik
  * @author Roland Toth
@@ -23,19 +23,7 @@ class ProcessFileEdit extends Process {
 	 * Path to templates directory without trailing slash
 	 * @var string
 	 */
-	protected $templatesPath;
-
-	/**
-	 * Template extension
-	 * @var string
-	 */
-	protected $templateExtension;
-
-	/**
-	 * Root path
-	 * @var string
-	 */
-	protected $rootPath;
+	private $templatesPath;
 
 	public function init() {
 		parent::init();
@@ -44,9 +32,7 @@ class ProcessFileEdit extends Process {
 		// if it is using Unix, MS-Dos or Macintosh line-ending conventions.
 		ini_set('auto_detect_line_endings', '1');
 
-		$this->templatesPath = $directory = rtrim($this->wire('config')->paths->templates, '/\\');
-		$this->templateExtension = $this->wire('config')->templateExtension;
-		$this->rootPath = $this->wire('config')->paths->root;
+		$this->templatesPath = rtrim($this->wire('config')->paths->templates, '/\\');
 	}
 
 	/**
@@ -87,19 +73,19 @@ class ProcessFileEdit extends Process {
 	protected function handleLineEndings($content, $lineEnding = "") {
 		$target_ending = $this->lineEndings; // from module setup
 
-		if('none' == $target_ending) return $content;
-		if('auto' == $target_ending) $target_ending = $lineEnding;
+		if($target_ending == 'none') return $content;
+		if($target_ending == 'auto') $target_ending = $lineEnding;
 
 		$currentLineEnding = $this->detect_newline_type($content);
 		if($currentLineEnding == 'win') {
-			if('mac' == $target_ending) return str_replace("\n", '',     $content);
-			if('nix' == $target_ending) return str_replace("\r", '',     $content);
+			if($target_ending == 'mac') return str_replace("\n", '',     $content);
+			if($target_ending == 'nix') return str_replace("\r", '',     $content);
 		} else if($currentLineEnding == 'mac') {
-			if('win' == $target_ending) return str_replace("\r", "\r\n", $content);
-			if('nix' == $target_ending) return str_replace("\r", "\n",   $content);
+			if($target_ending == 'win') return str_replace("\r", "\r\n", $content);
+			if($target_ending == 'nix') return str_replace("\r", "\n",   $content);
 		} else if($currentLineEnding == 'nix'){
-			if('win' == $target_ending) return str_replace("\n", "\r\n", $content);
-			if('mac' == $target_ending) return str_replace("\n", "\r",   $content);
+			if($target_ending == 'win') return str_replace("\n", "\r\n", $content);
+			if($target_ending == 'mac') return str_replace("\n", "\r",   $content);
 		}
 
 		return $content;
@@ -107,7 +93,9 @@ class ProcessFileEdit extends Process {
 
 	public function ___execute() {
 
-		if(!$this->wire('user')->isSuperuser() && !$this->wire('user')->hasPermission('file-editor')) throw new WirePermissionException($this->_('Insufficient permissions.'));
+		if(!$this->wire('user')->isSuperuser() && !$this->wire('user')->hasPermission('file-editor')) {
+			throw new WirePermissionException($this->_('Insufficient permissions.'));
+		}
 
 		$msg = $out = $fileContent = "";
 		$ro = false; // is file readonly?
@@ -168,8 +156,9 @@ class ProcessFileEdit extends Process {
 				}
 
 				if(trim($this->backupExtension) !== "") {
+					// make a backup of the edited file
 					$f = str_replace("/", "/.", $filebase);
-					if(0 !== strpos($this->backupExtension, '.')) {
+					if(strpos($this->backupExtension, '.') !== 0) {
 						$this->backupExtension = '.' . $this->backupExtension;
  					}
 					$dest = $this->dirPath . $f . $this->backupExtension;
@@ -266,15 +255,23 @@ class ProcessFileEdit extends Process {
 			$config->scripts->add("{$codemirror}addon/dialog/dialog.js");
 			$config->scripts->add("{$codemirror}addon/selection/active-line.js");
 			$config->scripts->add("{$codemirror}addon/edit/matchbrackets.js");
+			$config->scripts->add("{$codemirror}addon/fold/foldcode.js");
+			$config->scripts->add("{$codemirror}addon/fold/foldgutter.js");
+			$config->scripts->add("{$codemirror}addon/fold/brace-fold.js");
+			$config->scripts->add("{$codemirror}addon/fold/xml-fold.js");
+			$config->scripts->add("{$codemirror}addon/fold/indent-fold.js");
+			$config->scripts->add("{$codemirror}addon/fold/markdown-fold.js");
+			$config->scripts->add("{$codemirror}addon/fold/comment-fold.js");
 			$config->styles->add ("{$codemirror}lib/codemirror.css");
 			$config->styles->add ("{$codemirror}addon/dialog/dialog.css");
+			$config->styles->add ("{$codemirror}addon/fold/foldgutter.css");
 			if($this->theme != "default") $config->styles->add ("{$codemirror}theme/{$this->theme}.css");
 
-			$h = "";
+			$height = "";
 			if($this->editorHeight) {
 				$h1 = ($this->wire('user')->admin_theme == "AdminThemeUikit") ? "160" : "125";
-				if($this->editorHeight == "auto" || $this->editorHeight == "") $h = "window.editor.setSize(null, $(window).height() - " . $h1 . "+'px');";
-				else $h = "window.editor.setSize(null, '$this->editorHeight');";
+				if($this->editorHeight == "auto" || $this->editorHeight == "") $height = "window.editor.setSize(null, $(window).height() - " . $h1 . "+'px');";
+				else $height = "window.editor.setSize(null, '$this->editorHeight');";
 			}
 
 			$out .= "
@@ -290,13 +287,15 @@ class ProcessFileEdit extends Process {
 					styleActiveLine: true,
 					matchBrackets: true,
 					lineWrapping: true,
+					foldGutter: true,
+					gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
 					extraKeys: {
 						'Ctrl-S': function(cm) {
 							$('#saveFile').trigger('click');
 						}
 					}
 				});
-				$h
+				$height
 				window.editor.on('change', function() {
 					document.getElementById('change').innerHTML = '*';
 					$('#saveFile').removeClass('ui-state-disabled');
@@ -307,7 +306,7 @@ class ProcessFileEdit extends Process {
 			<style></style>
 			";
 
-			return $out . $this->buildForm($fileContent, $file, $filebase, $ro);
+			return $out . $this->buildForm($fileContent, $filebase, $ro);
 
 		} else {
 			// show folders
@@ -401,8 +400,7 @@ class ProcessFileEdit extends Process {
 				$fileName = $this->toUTF8($file, $this->encoding);
 
 				if(@is_dir("$directory/$file")) {
-					// directory
-					$parentDir = "/" . str_replace($this->rootPath, "", $directory . "/"); // directory is without trailing slash
+					$parentDir = "/" . str_replace($this->wire('config')->paths->root, "", $directory . "/"); // directory is without trailing slash
 					$dirPath = $this->toUTF8("$parentDir/$file/", $this->encoding);
 					$dirPath = str_replace("//", "/", $dirPath);
 					$tree .= "<li class='pft-d'><a data-p='$dirPath'>$fileName</a>";
@@ -418,7 +416,7 @@ class ProcessFileEdit extends Process {
 						$rootUrl = $this->convertPathToUrl($this->dirPath);
 						$link = rtrim($rootUrl, '/\\') . $link;
 						$tree .= "<li class='pft-f ext-$ext'><a href='$link'>$fileName</a></li>";
-					} else if($directory == $this->templatesPath && $ext == $this->templateExtension) {
+					} else if($directory == $this->templatesPath && $ext == $this->wire('config')->templateExtension) {
 						// template files
 						$a = $this->isTemplateFile($file);
 						if($a !== false) {
@@ -443,13 +441,13 @@ class ProcessFileEdit extends Process {
 	 * Generates a form markup for editor, textarea and submit button
 	 *
 	 * @param string $fileContent
-	 * @param string $file full file path, inluding base directory
 	 * @param string $filebase file path realtive to the base directory
 	 * @param bool $ro true if file is readonly
 	 * @return string form html markup
 	 *
 	 */
-	protected function buildForm($fileContent, $file, $filebase, $ro) {
+	protected function buildForm($fileContent, $filebase, $ro) {
+		// full file path in unix style is $this->dirPath . $filebase;
 		$form = $this->wire('modules')->get('InputfieldForm');
 		$form->method = 'post';
 		$form->attr('id+name','editForm');
@@ -499,7 +497,6 @@ class ProcessFileEdit extends Process {
 	private function toUTF8($str, $encoding = 'auto', $c = false) {
 		// http://stackoverflow.com/questions/7979567/php-convert-any-string-to-utf-8-without-knowing-the-original-character-set-or
 		if(extension_loaded('mbstring') && function_exists('iconv')) {
-			//MP todo: don't iconv form UTF-8 to UTF-8!!!!
 			if($encoding == 'auto') {
 				if(DIRECTORY_SEPARATOR != '/') {
 					// windows
@@ -511,7 +508,7 @@ class ProcessFileEdit extends Process {
 			} else {
 				if($encoding == 'urldecode') $str = @urldecode($str);
 				else if($encoding == 'none') $str = $str;
-				else $str = @iconv($encoding, 'UTF-8', $str);
+				else if($encoding != 'UTF-8') $str = @iconv($encoding, 'UTF-8', $str);
 			}
 		}
 		// replacement of % must be first!!!
@@ -566,16 +563,12 @@ class ProcessFileEdit extends Process {
 
 		if(!$pathTypes) {
 			$pathTypes = array('root'); // root is missing
-			foreach(wire('config')->paths as $pathType => $dummy) $pathTypes[] = $pathType;
+			foreach($this->wire('config')->paths as $pathType => $dummy) $pathTypes[] = $pathType;
 		}
 
 		foreach($pathTypes as $pathType) {
-			/*if($path == wire('config')->paths->assets . "sessions/" ) {
-				$url = wire('config')->urls->assets . "sessions/";
-				break;
-			}*/
-			if(wire('config')->paths->{$pathType} == $path) {
-				$url = wire('config')->urls->{$pathType};
+			if($this->wire('config')->paths->{$pathType} == $path) {
+				$url = $this->wire('config')->urls->{$pathType};
 				break;
 			}
 		}
@@ -585,16 +578,16 @@ class ProcessFileEdit extends Process {
 	/**
 	 * Check if filename is used as a template file
 	 *
-	 * @param string $filename with or without path
+	 * @param string $fileName with or without path
 	 * @return array|boolean array (templatename, adminediturl), false otherwise
 	 *
 	 */
-	private function isTemplateFile($filename) {
-		$filename = basename($filename);
-		foreach(wire('templates') as $tpl) {
+	private function isTemplateFile($fileName) {
+		$fileName = basename($fileName);
+		foreach($this->wire('templates') as $tpl) {
 			if($tpl->flags !== 0) continue; // skip system templates
-			if(basename($tpl->filename) == $filename) {
-				return array($tpl->name, wire('config')->urls->httpAdmin . 'setup/template/edit?id=' . $tpl->id);
+			if(basename($tpl->filename) == $fileName) {
+				return array($tpl->name, $this->wire('config')->urls->httpAdmin . 'setup/template/edit?id=' . $tpl->id);
 			}
 		}
 		return false;

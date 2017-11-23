@@ -18,7 +18,7 @@ class ProcessFileEditConfig extends ModuleConfig {
 		// Ignore ./, ../ and .<folder>/ paths...
 		$files = array_diff(@scandir($path), array('.', '..'));
 		foreach ($files as $f) {
-			if (is_dir("$path$f") && (0 !== strpos($f, '.'))) {
+			if (is_dir("$path$f") && (strpos($f, '.') !== 0)) {
 				$options["$path$f"] = "$path$f";
 				self::scanForSubdirs("$path$f" . DIRECTORY_SEPARATOR, $options);
 			}
