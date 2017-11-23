@@ -26,6 +26,7 @@ save operation. Options are: 'Auto detect' (this is default), 'Windows-1250',
 ### Line endings
 Type of line endings to use when saving. CodeMirror returns end-of-line as
 Windows style end-of-line (\r\n). Here you can set up how to handle this. Default is
+'Auto detect' that try to detect original line endings and apply them on save. You
 may manually set line endings to Windows (\r\n), Linux (\n) or Mac (\r) style. 
 
 ### Extensions filter
