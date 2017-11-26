@@ -5,7 +5,7 @@
  *
  * A module for editing files (in the admin area).
  *
- * @version 1.7.1
+ * @version 1.7.2
  * @author Florea Banus George
  * @author Matjaz Potocnik
  * @author Roland Toth
@@ -112,6 +112,8 @@ class ProcessFileEdit extends Process {
 
 		$this->extensionsFilter = $this->toArray($this->extensionsFilter);
 		if(empty($this->extensionsFilter)) $msg = $this->_('Extensions filter is empty.');
+
+		$this->dotFilesWhitelist = $this->toArray($this->dotFilesWhitelist);
 
 		if($msg != "") {
 			$this->error($msg);
@@ -374,6 +376,10 @@ class ProcessFileEdit extends Process {
 		// comment if statement if you want empty extensions array to return no files at all
 		if(!empty($extensions)) {
 			foreach(array_keys($filesArray) as $key) {
+
+				//exclude dotfiles, but leave whitelisted files
+				if($this->dotFilesExclusion && !in_array($filesArray[$key], $this->dotFilesWhitelist) && $filesArray[$key][0] == '.') unset($filesArray[$key]);
+
 				if(!@is_dir("$directory/$filesArray[$key]")) {
 					$ext = substr($filesArray[$key], strrpos($filesArray[$key], ".") + 1);
 					if($extFilter == in_array($ext, $extensions)) unset($filesArray[$key]);
@@ -591,6 +597,20 @@ class ProcessFileEdit extends Process {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Remove directories and files starting with dot, but leaves .htaccess
+	 *
+	 * @param string $filesArray
+	 * @return array
+	 *
+	 */
+	private function removeDotFiles($filesArray) {
+		foreach($filesArray as $file) {
+			 if ($file[0] = '.' && $file != '.htaccess') unset($filesArray[$file]);
+		}
+		return $filesArray;
 	}
 
 }

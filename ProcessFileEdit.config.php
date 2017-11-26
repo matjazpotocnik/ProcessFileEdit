@@ -134,6 +134,25 @@ class ProcessFileEditConfig extends ModuleConfig {
 			),
 
 			array(
+				'name'        => 'dotFilesExclusion',
+				'type'        => 'checkbox',
+				'label'       => $this->_('Dotfiles exclusion'),
+				'description' => $this->_('Check to exclude files and folders starting with dot.'),
+				'columnWidth' => 50,
+				'required'    => false,
+				'value'       => '0',
+			),
+
+			array(
+				'name'        => 'dotFilesWhitelist',
+				'type'        => 'text',
+				'description' => $this->_('Comma separated list of files starting with dot to include in the list.'),
+				'columnWidth' => 50,
+				'required'    => false,
+				'value'       => '',
+			),
+
+			array(
 				'name'        => 'editorHeight',
 				'type'        => 'text',
 				'label'       => $this->_('Editor height'),
@@ -147,7 +166,7 @@ class ProcessFileEditConfig extends ModuleConfig {
 				'name'        => 'theme',
 				'type'        => 'select',
 				'label'       => $this->_('Codemirror theme'),
-				'description' => $this->_('Select the theme used for editor **[demo](https://codemirror.net/demo/theme.html)**.'),
+				'description' => $this->_('Select the theme used for editor, see **[demo](https://codemirror.net/demo/theme.html)**.'),
 				'columnWidth' => 50,
 				'required'    => true,
 				'options'     => array(
