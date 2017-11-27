@@ -5,7 +5,7 @@
  *
  * A module for editing files (in the admin area).
  *
- * @version 1.7.2
+ * @version 1.7.3
  * @author Florea Banus George
  * @author Matjaz Potocnik
  * @author Roland Toth
@@ -112,8 +112,6 @@ class ProcessFileEdit extends Process {
 
 		$this->extensionsFilter = $this->toArray($this->extensionsFilter);
 		if(empty($this->extensionsFilter)) $msg = $this->_('Extensions filter is empty.');
-
-		$this->dotFilesWhitelist = $this->toArray($this->dotFilesWhitelist);
 
 		if($msg != "") {
 			$this->error($msg);
@@ -347,7 +345,7 @@ class ProcessFileEdit extends Process {
 		}
 
 		$directory = rtrim($directory, '/\\'); // strip both slash and backslash at the end
-
+		
 		$code  = "<div class='php-file-tree'>";
 		$code .= $this->php_file_tree_dir($directory, $extensions, (bool) $extFilter);
 		$code .= "</div>";
@@ -377,8 +375,9 @@ class ProcessFileEdit extends Process {
 		if(!empty($extensions)) {
 			foreach(array_keys($filesArray) as $key) {
 
-				//exclude dotfiles, but leave whitelisted files
-				if($this->dotFilesExclusion && !in_array($filesArray[$key], $this->dotFilesWhitelist) && $filesArray[$key][0] == '.') unset($filesArray[$key]);
+				// exclude dotfiles, but leave files in extensions filter
+				// substr($filesArray[$key], 1) removes first char
+				if($this->dotFilesExclusion && $filesArray[$key][0] == '.' && !in_array(substr($filesArray[$key], 1), $extensions) ) unset($filesArray[$key]);
 
 				if(!@is_dir("$directory/$filesArray[$key]")) {
 					$ext = substr($filesArray[$key], strrpos($filesArray[$key], ".") + 1);
@@ -597,20 +596,6 @@ class ProcessFileEdit extends Process {
 			}
 		}
 		return false;
-	}
-
-	/**
-	 * Remove directories and files starting with dot, but leaves .htaccess
-	 *
-	 * @param string $filesArray
-	 * @return array
-	 *
-	 */
-	private function removeDotFiles($filesArray) {
-		foreach($filesArray as $file) {
-			 if ($file[0] = '.' && $file != '.htaccess') unset($filesArray[$file]);
-		}
-		return $filesArray;
 	}
 
 }

@@ -45,12 +45,6 @@ omitted). Leave empty for no backup (this is default).
 Check to exclude files and folders starting with dot (.) like .gitignore etc. Default
 is unchecked.
 
-### Dotfiles whitelist
-Comma separated list of files and folders starting with dot to include in the files/folders
-list if dotfiles exclusion is checked. You may, for example, enter ".htacces" to allow 
-editing this file, but exclued all other dotfiles. Leave empty for no whitelisting 
-(this is default).
-
 ### Editor height
 The height of the editor textarea, default is "auto", can be any height like "450px".
 

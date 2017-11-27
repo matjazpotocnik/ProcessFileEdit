@@ -1,5 +1,8 @@
 # Changelog
 
+### 1.7.3 (2017-11-27)
+- removed dotfiles whitelist option (suggested by adrian)
+
 ### 1.7.2 (2017-11-26)
 - add option to ignore files with dot as first character, like .gitignore, .editorconfig etc. (suggested by adrian)
 
