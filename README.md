@@ -1,25 +1,25 @@
 # ProcessFileEdit
 
-Allow modal editing of files on filesystem. The list of directories and files
-are displayed, clicking on file opens modal window with codemirror editor. If
-file is an image, viewer is opened in modal. If file is used as a template, link
-to the template edit is provided. Intended primarily for superusers, give other
-users file-edit permission.
+Allow modal editing of files on the filesystem. The list of directories and files
+are displayed, clicking on file opens modal window with the codemirror editor. If
+the file is an image, the viewer is opened in modal. If the file is used as a 
+template, link to the template edit is provided. Intended primarily for superusers, 
+give other users file-edit permission.
 
-This is not the replacement for full blown editor. Be aware that if you make
-changes to files that cause PW to throws an error in admin, you loose access to
+This is not the replacement for a full-blown editor. Be aware that if you make
+changes to files that cause PW to throws an error in admin, you lose access to
 this module too and you will need some other means to access the file again!
 
 ## Options
 
 ### Directory path
-Path to the directory from which to display directory tree. By default it's set 
+The path to the directory from which to display directory tree. By default it's set 
 to $config->paths->site
 
 ### File encoding
-Encoding used when saving file name. Different operating systems and underlying
-filesystem use different ways of how file names are stored on the filesystem.
-This setting allows you to overcome sitautions when file name become garbled after
+The encoding used when saving file name. Different operating systems and underlying
+filesystem use different ways of how filenames are stored on the filesystem.
+This setting allows you to overcome situations when file name become garbled after
 save operation. Options are: 'Auto detect' (this is default), 'Windows-1250',
 'Windows-1252', 'ISO-8859-2', 'PHP\'s urldecode' and 'none'.
 
@@ -34,7 +34,7 @@ Comma separated list of extensions to filter files by. By default "php,module,js
 
 ### Include or exclude extensions
 Select to include or exclude files based on the extensions defined in Extension
-Filter. Include is default, so files matching extensions will be displayed in
+Filter. Include is the default, so files matching extensions will be displayed in
 directory/file tree.
 
 ### Backup extension
@@ -42,15 +42,17 @@ Extension to use when backing up edited file, for example ".bak" ("." is prepend
 omitted). Leave empty for no backup (this is default).
 
 ### Dotfiles exclusion
-Check to exclude files and folders starting with dot (.) like .gitignore etc. Default
-is unchecked.
+Check to exclude files and folders starting with a dot (.) like .gitignore, .htaccess etc.
+The default is unchecked. This option also hides the old versions of site modules that were
+created by Ryan's Upgrades module showing up when browsing /site/modules. You can add 
+"htaccess" and other extensions to the extensions filter to allow those.
 
 ### Editor height
-The height of the editor textarea, default is "auto", can be any height like "450px".
+The height of the editor textarea, the default is "auto", can be any height like "450px".
 
 ### Codemirror theme
 List of themes supported by CodeMirror, see **[demo](https://codemirror.net/demo/theme.html)**. 
-Default theme is "default". 
+The default theme is "default". 
 
 ## Installation
 Copy the files to the /site/modules/ProcessFileEdit folder, log in to your ProcessWire
