@@ -119,6 +119,7 @@ class ProcessFileEdit extends Process {
 		}
 
 		$filebase = $this->wire('input')->get('f');
+		$lineNum = (int) $this->wire('input')->get('l') - 1;
 
 		if($filebase) {
 			// edit file
@@ -301,6 +302,10 @@ class ProcessFileEdit extends Process {
 					$('#saveFile').removeClass('ui-state-disabled');
 					$('#saveFile_copy').removeClass('ui-state-disabled');
 				});
+				var t = editor.charCoords({line: {$lineNum}, ch: 0}, 'local').top;
+				var middleHeight = editor.getScrollerElement().offsetHeight / 2;
+				editor.scrollTo(null, t - middleHeight - 5);
+				window.editor.setCursor({line: {$lineNum}, ch: 0});
 			});
 			</script>
 			<style></style>
@@ -345,7 +350,7 @@ class ProcessFileEdit extends Process {
 		}
 
 		$directory = rtrim($directory, '/\\'); // strip both slash and backslash at the end
-		
+
 		$code  = "<div class='php-file-tree'>";
 		$code .= $this->php_file_tree_dir($directory, $extensions, (bool) $extFilter);
 		$code .= "</div>";
