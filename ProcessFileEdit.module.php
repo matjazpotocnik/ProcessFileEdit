@@ -5,7 +5,7 @@
  *
  * A module for editing files (in the admin area).
  *
- * @version 1.7.3
+ * @version 1.7.4
  * @author Florea Banus George
  * @author Matjaz Potocnik
  * @author Roland Toth
@@ -463,13 +463,19 @@ class ProcessFileEdit extends Process {
 		$form->attr('id+name','editForm');
 		$form->action = $this->page->httpUrl . "?f=" . urlencode($filebase);
 
+		/*
+		InputfieldText->setAttributeValue() trims the value!
 		$f = $this->wire('modules')->get('InputfieldTextarea');
 		$f->attr('id+name','editFile');
 		$f->skipLabel = true;
 		$f->collapsed = Inputfield::collapsedNever;
-		$f->value = $fileContent; //htmlspecialchars($fileContent);
+		$f->value = $fileContent;
 		$f->rows = 22;
 		$form->add($f);
+		*/
+		$fc = htmlspecialchars($fileContent, ENT_QUOTES, 'UTF-8');
+		$out = "<textarea style='display:none' id='editFile' name='editFile' rows='22'>\n$fc</textarea>";
+		$form->prependMarkup = $out;
 
 		if(!$ro) { // no button if file is readonly
 			$f = $this->wire('modules')->get('InputfieldButton');

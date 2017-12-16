@@ -1,5 +1,9 @@
 # Changelog
 
+### 1.7.4 (2017-11-27)
+- added ability to open editor at specific line number (suggested by adrian)
+- fixed bug with InputfieldTextarea where empty lines at the beginning of the file are discarded (reported by adrian)
+
 ### 1.7.3 (2017-11-27)
 - removed dotfiles whitelist option (suggested by adrian)
 

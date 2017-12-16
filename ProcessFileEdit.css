@@ -216,3 +216,11 @@ h1.uk-margin-remove-top {
     font-size: 75%;
     min-width: 260px;
 }
+
+.CodeMirror-lines {
+  padding: 0 !important;
+}
+
+.CodeMirror {
+	border: 1px solid #eee;
+}
