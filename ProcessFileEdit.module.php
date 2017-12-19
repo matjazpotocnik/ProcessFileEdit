@@ -5,7 +5,7 @@
  *
  * A module for editing files (in the admin area).
  *
- * @version 1.7.4
+ * @version 1.7.5
  * @author Florea Banus George
  * @author Matjaz Potocnik
  * @author Roland Toth
@@ -287,7 +287,7 @@ class ProcessFileEdit extends Process {
 					indentWithTabs: true,
 					styleActiveLine: true,
 					matchBrackets: true,
-					lineWrapping: true,
+					lineWrapping: ".($this->lineWrapping ?: '0').",
 					foldGutter: true,
 					gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
 					extraKeys: {

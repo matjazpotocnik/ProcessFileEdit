@@ -148,9 +148,19 @@ class ProcessFileEditConfig extends ModuleConfig {
 				'type'        => 'text',
 				'label'       => $this->_('Editor height'),
 				'description' => $this->_('Set the height of the editor. Default is "auto", can be any height like "450px".'),
-				'columnWidth' => 50,
+				'columnWidth' => 25,
 				'required'    => false,
 				'value'       => 'auto',
+			),
+
+			array(
+				'name'        => 'lineWrapping',
+				'type'        => 'checkbox',
+				'label'       => $this->_('Editor Line Wrapping'),
+				'description' => $this->_('Make long lines wrap. Default is off.'),
+				'columnWidth' => 25,
+				'required'    => false,
+				'value'       => '0',
 			),
 
 			array(
