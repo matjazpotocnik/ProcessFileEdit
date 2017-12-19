@@ -235,6 +235,9 @@ class ProcessFileEdit extends Process {
 				case 'markdown':
 					$mode = 'text/x-markdown';
 					break;
+				case 'xml':
+					$mode = 'application/xml';
+					break;
 				default:
 					$mode = 'text/plain';
 			};

@@ -1,5 +1,8 @@
 # Changelog
 
+### 1.7.5 (2017-11-27)
+- add config setting to control line wrapping in CodeMirror (suggested by adrian)
+
 ### 1.7.4 (2017-11-27)
 - added ability to open editor at specific line number (suggested by adrian)
 - fixed bug with InputfieldTextarea where empty lines at the beginning of the file are discarded (reported by adrian)

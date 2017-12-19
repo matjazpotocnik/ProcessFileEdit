@@ -50,6 +50,9 @@ created by Ryan's Upgrades module showing up when browsing /site/modules. You ca
 ### Editor height
 The height of the editor textarea, the default is "auto", can be any height like "450px".
 
+### Line wrapping
+Make long lines in the editor wrap. Default is on.
+
 ### Codemirror theme
 List of themes supported by CodeMirror, see **[demo](https://codemirror.net/demo/theme.html)**. 
 The default theme is "default". 

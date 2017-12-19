@@ -157,10 +157,10 @@ class ProcessFileEditConfig extends ModuleConfig {
 				'name'        => 'lineWrapping',
 				'type'        => 'checkbox',
 				'label'       => $this->_('Editor Line Wrapping'),
-				'description' => $this->_('Make long lines wrap. Default is off.'),
+				'description' => $this->_('Make long lines wrap. Default is on.'),
 				'columnWidth' => 25,
 				'required'    => false,
-				'value'       => '0',
+				'value'       => '1',
 			),
 
 			array(
