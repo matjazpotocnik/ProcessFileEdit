@@ -136,7 +136,7 @@ $(document).ready(function () {
      closeBtnCurrent.trigger("mousedown");
      }
      });
-     */
+    */
 
     closeBtn.on("mousedown", function (e) {
         if (isChanged.html() !== "") {
@@ -150,7 +150,8 @@ $(document).ready(function () {
         }
     });
 
-    if (!!$.prototype.magnificPopup) {
+    //if (!!$.prototype.magnificPopup) {
+    if ($.prototype.magnificPopup) {
         var magnificOptions = {
             closeOnContentClick: true,
             closeBtnInside: true,

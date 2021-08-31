@@ -166,7 +166,8 @@ class ProcessFileEdit extends Process {
 					@copy($file, $dest);
 				}
 
-				if($fileHandle = @fopen($file, "w+")) {
+				$fileHandle = @fopen($file, "w+");
+				if($fileHandle) {
 					// we can write to file
 					$raw = $this->wire('input')->post('editFile');
 					$content = $this->handleLineEndings($raw, $lineEnding);
@@ -196,7 +197,8 @@ class ProcessFileEdit extends Process {
 			$this->setFuel('processHeadline', sprintf($this->_("Edit file: %s"), $file));
 
 			$fileUTF8 = $this->toUTF8($displayFile, $this->encoding);
-			if($fileHandle = @fopen($file, "r+")) {
+			$fileHandle = @fopen($file, "r+");
+			if($fileHandle) {
 				$fileContent = ((filesize($file) > 0) ? fread($fileHandle, filesize($file)) : '');
 				fclose($fileHandle);
 				$out .= "<h3>" . $fileUTF8 . "<span id='change'></span></h3>";
