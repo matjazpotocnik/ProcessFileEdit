@@ -150,7 +150,8 @@ class ProcessFileEdit extends Process {
 
 				// try to detect original line endings
 				$lineEnding = "";
-				if($fileHandle = @fopen($file, "r")) {
+				$fileHandle = @fopen($file, "r");
+				if($fileHandle) {
 					$line = fgets($fileHandle);
 					$lineEnding = $this->detect_newline_type($line);
 					fclose($fileHandle);
@@ -175,7 +176,7 @@ class ProcessFileEdit extends Process {
 					fclose($fileHandle);
 					if($this->wire('input')->get('s')) {
 						return ""; // empty string means there is no error
-						exit(0); // just in case, not needed
+						//exit(0); // just in case, not needed
 					}
 					$this->message($this->_('File saved'));
 					$this->session->redirect($this->page->httpUrl . "?f=" . $filebase);
@@ -184,7 +185,7 @@ class ProcessFileEdit extends Process {
 					$msg = sprintf($this->_('Error saving file %s'), $displayFile);
 					if($this->wire('input')->get('s')) {
 						return $msg;
-						exit(0); // just in case, not needed
+						//exit(0); // just in case, not needed
 					}
 					$this->message($msg);
 					$this->session->redirect($this->page->httpUrl . "?f=" . $filebase);
