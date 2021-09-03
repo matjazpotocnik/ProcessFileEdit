@@ -1,5 +1,8 @@
 # Changelog
 
+### 1.7.6 (2021-09-03)
+- CodeMirror update to 5.62.0
+
 ### 1.7.5 (2017-11-27)
 - add config setting to control line wrapping in CodeMirror (suggested by adrian)
 
