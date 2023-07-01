@@ -30,7 +30,7 @@ class ProcessFileEdit extends Process {
 
 		// When auto_detect_line_endings is turned on, PHP will examine the data read by fgets() and file() to see
 		// if it is using Unix, MS-Dos or Macintosh line-ending conventions.
-		ini_set('auto_detect_line_endings', '1');
+		//@ini_set('auto_detect_line_endings', '1'); //deprecated in PHP 8.1+
 
 		$this->templatesPath = rtrim($this->wire('config')->paths->templates, '/\\');
 	}
