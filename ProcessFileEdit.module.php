@@ -5,7 +5,7 @@
  *
  * A module for editing files (in the admin area).
  *
- * @version 1.7.6
+ * @version 1.7.7
  * @author Florea Banus George
  * @author Matjaz Potocnik
  * @author Roland Toth
@@ -15,6 +15,7 @@
  * Licensed under GNU/GPL v2
  *
  * https://processwire.com
+ * TODO: at some point make PHP 7.1 required, get rid of UTF8 conversion, and possibly make it PW 3.x only
  *
  */
 class ProcessFileEdit extends Process {
@@ -517,6 +518,9 @@ class ProcessFileEdit extends Process {
 	 *
 	 */
 	private function toUTF8($str, $encoding = 'auto', $c = false) {
+
+		if(PHP_VERSION_ID >= 70100) return $str;
+
 		// http://stackoverflow.com/questions/7979567/php-convert-any-string-to-utf-8-without-knowing-the-original-character-set-or
 		if(extension_loaded('mbstring') && function_exists('iconv')) {
 			if($encoding == 'auto') {

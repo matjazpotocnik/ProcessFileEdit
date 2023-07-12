@@ -17,8 +17,8 @@ class ProcessFileEditConfig extends ModuleConfig {
 	protected static function scanForSubdirs($path, &$options) {
 		// Ignore ./, ../ and .<folder>/ paths...
 		$files = array_diff(@scandir($path), array('.', '..'));
-		foreach ($files as $f) {
-			if (is_dir("$path$f") && (strpos($f, '.') !== 0)) {
+		foreach($files as $f) {
+			if(is_dir("$path$f") && (strpos($f, '.') !== 0)) {
 				$options["$path$f"] = "$path$f";
 				self::scanForSubdirs("$path$f" . DIRECTORY_SEPARATOR, $options);
 			}
@@ -42,7 +42,7 @@ class ProcessFileEditConfig extends ModuleConfig {
 		);
 
 		// add directories under /site/templates
-		if (function_exists('scandir')) {
+		if(function_exists('scandir')) {
 			self::scanForSubdirs($paths->templates, $options);
 		}
 
@@ -171,7 +171,7 @@ class ProcessFileEditConfig extends ModuleConfig {
 				'columnWidth' => 50,
 				'required'    => true,
 				'options'     => array(
-					'default'                 => 'default',
+					'default' => 'default',
 					'3024-day' => '3024-day',
 					'3024-night' => '3024-night',
 					'abbott' => 'abbott',

@@ -1,5 +1,8 @@
 # Changelog
 
+### 1.7.7 (2023-07-12)
+- CodeMirror update to 5.65.13
+
 ### 1.7.6 (2021-09-03)
 - CodeMirror update to 5.62.0
 
