@@ -1,21 +1,19 @@
-<?php
+<?php namespace ProcessWire;
 
 /**
  * File Editor Module
  *
  * A module for editing files (in the admin area).
  *
- * @version 1.7.7
+ * @version 2.0.0
  * @author Florea Banus George
  * @author Matjaz Potocnik
  * @author Roland Toth
  * @link https://github.com/matjazpotocnik/ProcessFileEdit
  *
- * ProcessWire 2.x/3.x, Copyright 2017 by Ryan Cramer
- * Licensed under GNU/GPL v2
+ * ProcessWire 3.x, Copyright 2023 by Ryan Cramer
  *
  * https://processwire.com
- * TODO: at some point make PHP 7.1 required, get rid of UTF8 conversion, and possibly make it PW 3.x only
  *
  */
 class ProcessFileEdit extends Process {
@@ -28,11 +26,6 @@ class ProcessFileEdit extends Process {
 
 	public function init() {
 		parent::init();
-
-		// When auto_detect_line_endings is turned on, PHP will examine the data read by fgets() and file() to see
-		// if it is using Unix, MS-Dos or Macintosh line-ending conventions.
-		//@ini_set('auto_detect_line_endings', '1'); //deprecated in PHP 8.1+
-
 		$this->templatesPath = rtrim($this->wire('config')->paths->templates, '/\\');
 	}
 
@@ -143,7 +136,7 @@ class ProcessFileEdit extends Process {
 
 			$displayFile = $file;
 			// replace slashes with backslashes on windows
-			if(DIRECTORY_SEPARATOR != '/') $displayFile = str_replace('/', DIRECTORY_SEPARATOR, $displayFile);
+			//if(DIRECTORY_SEPARATOR != '/') $displayFile = str_replace('/', DIRECTORY_SEPARATOR, $displayFile);
 
 			if($this->wire('input')->post('saveFile') || $this->wire('input')->get('s')) {
 				// post->saveFile is present when submit button is not "hijacked" in javascript,
@@ -196,24 +189,45 @@ class ProcessFileEdit extends Process {
 
 			// in modal there are no breadcrumbs
 			$this->fuel('breadcrumbs')->add(new Breadcrumb('./', $this->_('File Editor')));
-			$this->setFuel('processHeadline', sprintf($this->_("Edit file: %s"), $file));
+			//$this->setFuel('processHeadline', sprintf($this->_("Edit file: %s"), $file));
+			$this->setFuel('processHeadline', $this->_("Edit file"));
 
-			$fileUTF8 = $this->toUTF8($displayFile, $this->encoding);
+			//$fileUTF8 = $this->toUTF8($displayFile, $this->encoding); //TODO: encoding not needed, remove UTF call
 			$fileHandle = @fopen($file, "r+");
 			if($fileHandle) {
 				$fileContent = ((filesize($file) > 0) ? fread($fileHandle, filesize($file)) : '');
 				fclose($fileHandle);
-				$out .= "<h3>" . $fileUTF8 . "<span id='change'></span></h3>";
+				$out .= "<h3>" . $displayFile . "<span id='change'></span></h3>"; //$fileUTF8
 			} else {
 				// file is readonly
 				// $msg = sprintf($this->_('File %s has readonly permissions.'), $file);
 				// $this->message($msg);
 				$ro = true;
-				$out .= "<h3>" . $fileUTF8 . " (readonly)</h3>";
+				$out .= "<h3>" . $displayFile . " (readonly)</h3>"; //$fileUTF8
 			}
 
 			$ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
-			switch($ext) {
+			$modes = [
+				'php' => 'application/x-httpd-php',
+				'module' => 'application/x-httpd-php',
+				'inc' => 'application/x-httpd-php',
+				'js' => 'text/javascript',
+				'css' => 'text/css',
+				'html' => 'text/html',
+				'htmx' => 'text/html',
+				'htm' => 'text/html',
+				'latte' => 'text/html',
+				'twig' => 'text/html',
+				'smarty' => 'text/html',
+				'sql' => 'text/x-mysql',
+				'md' => 'text/x-markdown',
+				'markdown' => 'text/x-markdown',
+				'xml' => 'application/xml',
+			];
+			$mode = 'text/plain';
+			if(array_key_exists($ext, $modes)) $mode = $modes[$ext];
+			bd($mode);
+			/*switch($ext) {
 				case 'php':
 				case 'module':
 				case 'inc':
@@ -244,10 +258,10 @@ class ProcessFileEdit extends Process {
 					break;
 				default:
 					$mode = 'text/plain';
-			};
+			};*/
 
 			$config = $this->wire('config');
-			$codemirror = $config->urls->siteModules . __CLASS__ . "/codemirror/";
+			$codemirror = $config->urls->siteModules . $this . "/codemirror/";
 			$config->scripts->add("{$codemirror}lib/codemirror.js");
 			$config->scripts->add("{$codemirror}mode/clike/clike.js");
 			$config->scripts->add("{$codemirror}mode/xml/xml.js");
@@ -347,7 +361,7 @@ class ProcessFileEdit extends Process {
 	 * @return string html markup
 	 *
 	 */
-	 public function php_file_tree($directory, $extensions = array(), $extFilter = false) {
+	 public function php_file_tree($directory, $extensions = [], $extFilter = false) {
 
 		//$timer = Debug::timer();
 		if(!function_exists("scandir")) {
@@ -376,10 +390,10 @@ class ProcessFileEdit extends Process {
 	 * @return string html markup
 	 *
 	 */
-	private function php_file_tree_dir($directory, $extensions = array(), $extFilter = false, $parent = "") {
+	private function php_file_tree_dir($directory, $extensions = [], $extFilter = false, $parent = "") {
 
 		// Get directories/files
-		$filesArray = array_diff(@scandir($directory), array('.', '..')); // array_diff removes . and ..
+		$filesArray = array_diff(@scandir($directory), ['.', '..']); // array_diff removes . and ..
 
 		// Filter unwanted extensions
 		// currently empty extensions array returns all files in folders
@@ -405,7 +419,7 @@ class ProcessFileEdit extends Process {
 			natcasesort($filesArray);
 
 			// Make directories first, then files
-			$fls = $dirs = array();
+			$fls = $dirs = [];
 			foreach($filesArray as $f) {
 				if(@is_dir("$directory/$f")) $dirs[] = $f; else $fls[] = $f;
 			}
@@ -414,13 +428,13 @@ class ProcessFileEdit extends Process {
 			$tree .= "<ul>";
 
 			foreach($filesArray as $file) {
-				$fileName = $this->toUTF8($file, $this->encoding);
+				//$fileName = $this->toUTF8($file, $this->encoding);//TODO: encoding not needed, remove UTF call
 
 				if(@is_dir("$directory/$file")) {
 					$parentDir = "/" . str_replace($this->wire('config')->paths->root, "", $directory . "/"); // directory is without trailing slash
-					$dirPath = $this->toUTF8("$parentDir/$file/", $this->encoding);
-					$dirPath = str_replace("//", "/", $dirPath);
-					$tree .= "<li class='pft-d'><a data-p='$dirPath'>$fileName</a>";
+					//$dirPath = $this->toUTF8("$parentDir/$file/", $this->encoding);//TODO: encoding not needed, remove UTF call
+					$dirPath = str_replace("//", "/", "$parentDir/$file/");
+					$tree .= "<li class='pft-d'><a data-p='$dirPath'>$file</a>"; //$fileName
 					$tree .= $this->php_file_tree_dir("$directory/$file", $extensions, $extFilter, "$parent/$file"); // no need to urlencode parent/file
 					$tree .= "</li>";
 				} else {
@@ -428,23 +442,23 @@ class ProcessFileEdit extends Process {
 					// $parent = str_replace($this->dirPath, "", $directory);
 					$ext = strtolower(substr($file, strrpos($file, ".") + 1));
 					$link = str_replace("%2F", "/", rawurlencode("$parent/$file")); // to overcome bug/feature on apache
-					if(in_array($ext, array("jpg", "png", "gif", "bmp"))) {
+					if(in_array($ext, ["jpg", "png", "gif", "bmp"])) {
 						// images
 						$rootUrl = $this->convertPathToUrl($this->dirPath);
 						$link = rtrim($rootUrl, '/\\') . $link;
-						$tree .= "<li class='pft-f ext-$ext'><a href='$link'>$fileName</a></li>";
+						$tree .= "<li class='pft-f ext-$ext'><a href='$link'>$file</a></li>"; //$fileName
 					} else if($directory == $this->templatesPath && $ext == $this->wire('config')->templateExtension) {
 						// template files
 						$a = $this->isTemplateFile($file);
 						if($a !== false) {
 							$tpl = "<span class='pw-modal pw-modal-large' data-href='$a[1]'>$a[0]</span>";
-							$tree .= "<li class='pft-f ext-$ext'><a class='pw-modal pw-modal-large' href='?f=$link'>$fileName</a>$tpl</li>";
+							$tree .= "<li class='pft-f ext-$ext'><a class='pw-modal pw-modal-large' href='?f=$link'>$file</a>$tpl</li>"; //$fileName
 						} else {
-							$tree .= "<li class='pft-f ext-$ext'><a class='pw-modal pw-modal-large' href='?f=$link'>$fileName</a></li>";
+							$tree .= "<li class='pft-f ext-$ext'><a class='pw-modal pw-modal-large' href='?f=$link'>$file</a></li>"; //$fileName
 						}
 					} else {
 						// just plain file
-						$tree .= "<li class='pft-f ext-$ext'><a class='pw-modal pw-modal-large' href='?f=$link'>$fileName</a></li>";
+						$tree .= "<li class='pft-f ext-$ext'><a class='pw-modal pw-modal-large' href='?f=$link'>$file</a></li>";  //$fileName
 					}
 				}
 			}
@@ -509,40 +523,6 @@ class ProcessFileEdit extends Process {
 	}
 
 	/**
-	 * Try to convert string to UTF-8, far from bulletproof, requires mbstring and iconv support
-	 *
-	 * @param string $str string to convert to UTF-8
-	 * @param string $encoding auto|ISO-8859-2|Windows-1250|Windows-1252|urldecode
-	 * @param boolean $c
-	 * @return string
-	 *
-	 */
-	private function toUTF8($str, $encoding = 'auto', $c = false) {
-
-		if(PHP_VERSION_ID >= 70100) return $str;
-
-		// http://stackoverflow.com/questions/7979567/php-convert-any-string-to-utf-8-without-knowing-the-original-character-set-or
-		if(extension_loaded('mbstring') && function_exists('iconv')) {
-			if($encoding == 'auto') {
-				if(DIRECTORY_SEPARATOR != '/') {
-					// windows
-					$str = @iconv(mb_detect_encoding($str, mb_detect_order(), true), 'UTF-8', $str);
-				} else {
-					// linux
-					$str = @iconv('Windows-1250', 'UTF-8', $str); // wild guess!!! could be ISO-8859-2, UTF-8, ...
-				}
-			} else {
-				if($encoding == 'urldecode') $str = @urldecode($str);
-				else if($encoding == 'none') $str = $str;
-				else if($encoding != 'UTF-8') $str = @iconv($encoding, 'UTF-8', $str);
-			}
-		}
-		// replacement of % must be first!!!
-		if($c) $str = str_replace(array("%", "#", " ", "{", "}", "^", "+"), array("%25", "%23", "%20", "%7B", "%7D", "%5E", "%2B"), $str);
-		return $str;
-	}
-
-	/**
 	 * Sanitize directory/file path:
 	 *   - replace all backslashes with slashes
 	 *   - replace all double slashes with single slashes
@@ -579,16 +559,16 @@ class ProcessFileEdit extends Process {
 	 * Convert $config->paths->key to $config->urls->key
 	 *
 	 * @param string $path eg. $config->paths->templates
-	 * @param array $pathTypes eg. array('site','templates'), if not specified, array is constructed from $config->paths
+	 * @param array $pathTypes eg. ['site','templates')] if not specified, array is constructed from $config->paths
 	 * @return string path converted to url, empty string if path not found
 	 *
 	 */
-	private function convertPathToUrl($path, $pathTypes = array()) {
+	private function convertPathToUrl($path, $pathTypes = []) {
 		$path = rtrim($path, '/\\') . '/'; // strip both slash and backslash at the end and then re-add separator
 		$url = '';
 
 		if(!$pathTypes) {
-			$pathTypes = array('root'); // root is missing
+			$pathTypes = ['root']; // root is missing
 			foreach($this->wire('config')->paths as $pathType => $dummy) $pathTypes[] = $pathType;
 		}
 
@@ -613,7 +593,7 @@ class ProcessFileEdit extends Process {
 		foreach($this->wire('templates') as $tpl) {
 			if($tpl->flags !== 0) continue; // skip system templates
 			if(basename($tpl->filename) == $fileName) {
-				return array($tpl->name, $this->wire('config')->urls->httpAdmin . 'setup/template/edit?id=' . $tpl->id);
+			return [$tpl->name, $this->wire('config')->urls->httpAdmin . 'setup/template/edit?id=' . $tpl->id];
 			}
 		}
 		return false;

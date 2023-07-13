@@ -1,4 +1,4 @@
-<?php
+<?php namespace ProcessWire;
 
 /**
  * File Editor settings
@@ -16,11 +16,12 @@ class ProcessFileEditConfig extends ModuleConfig {
 	 */
 	protected static function scanForSubdirs($path, &$options) {
 		// Ignore ./, ../ and .<folder>/ paths...
-		$files = array_diff(@scandir($path), array('.', '..'));
-		foreach($files as $f) {
-			if(is_dir("$path$f") && (strpos($f, '.') !== 0)) {
-				$options["$path$f"] = "$path$f";
-				self::scanForSubdirs("$path$f" . DIRECTORY_SEPARATOR, $options);
+		$files = array_diff(@scandir($path), ['.', '..']);
+		foreach($files as $file) {
+			$f = "$path$file";
+			if(is_dir($f) && (strpos($file, '.') !== 0)) {
+				$options[$f] = $f;
+				self::scanForSubdirs($f . '/', $options);
 			}
 		}
 	}
@@ -34,143 +35,127 @@ class ProcessFileEditConfig extends ModuleConfig {
 	 */
 	protected static function getDirPathOptions($paths) {
 		// predefined paths
-		$options = array(
-			$paths->root => $paths->root,
-			$paths->site => $paths->site,
-			$paths->siteModules => $paths->siteModules,
-			$paths->templates => $paths->templates,
-		);
+		$rootPath = rtrim($paths->root, '/');
+		$sitePath = rtrim($paths->site, '/');
+		$siteModulesPath = rtrim($paths->siteModules, '/');
+		$templatesPath = rtrim($paths->templates, '/');
+		$options = [
+			$rootPath => $rootPath,
+			$sitePath => $sitePath,
+			$siteModulesPath => $siteModulesPath,
+			$templatesPath => $templatesPath,
+		];
 
-		// add directories under /site/templates
-		if(function_exists('scandir')) {
-			self::scanForSubdirs($paths->templates, $options);
-		}
+		// add directories under /site/templates to the options
+		self::scanForSubdirs($paths->templates, $options);
 
 		return $options;
 	}
 
 	public function __construct() {
 
-		$this->add(array(
+		$this->add([
 
-			array(
+			[
 				'name'        => 'dirPath',
 				'type'        => 'select',
 				'label'       => $this->_('Directory path'),
 				'description' => $this->_('Path to the directory from which to get files.'),
-				'columnWidth' => 50,
+				'columnWidth' => 34,
 				'required'    => true,
 				'options'     => self::getDirPathOptions($this->config->paths),
-				'value'       => $this->config->paths->site,
-			),
+				'value'       => rtrim($this->config->paths->site, '/'),
+			],
 
-			array(
-				'name'        => 'encoding',
-				'type'        => 'select',
-				'label'       => $this->_('File encoding'),
-				'description' => $this->_('Encoding used when saving file name.'),
-				'columnWidth' => 25,
+			[
+				'name'        => 'extensionsFilter',
+				'type'        => 'text',
+				'label'       => $this->_('Extensions filter'),
+				'description' => $this->_('Comma separated list of extensions to filter files by. Example: "php,module,js,css".'),
+				'columnWidth' => 33,
 				'required'    => true,
-				'options'     => array(
-					'auto'          => 'Auto detect',
-					'Windows-1250'  => 'Windows-1250',
-					'Windows-1252'  => 'Windows-1252',
-					'ISO-8859-2'    => 'ISO-8859-2',
-					'urldecode'     => 'PHP\'s urldecode',
-					'none'          => 'none',
-				),
-				'value'       => 'auto',
-			),
+				'value'       => 'php,module,js,css',
+			],
 
-			array(
+			[
+				'name'        => 'extFilter',
+				'type'        => 'select',
+				'label'       => $this->_('Include or exclude extensions'),
+				'description' => $this->_('Select to include or exclude files with the defined extensions.'),
+				'columnWidth' => 33,
+				'required'    => true,
+				'options'     => [
+					'0'             => $this->_('Include files with named extensions'),
+					'1'             => $this->_('Exclude files with named extensions'),
+				],
+				'value'       => '0',
+			],
+
+			[
 				'name'        => 'lineEndings',
 				'type'        => 'select',
 				'label'       => $this->_('Line endings'),
 				'description' => $this->_('Type of line ending to use when saving.'),
-				'columnWidth' => 25,
+				'columnWidth' => 34,
 				'required'    => true,
-				'options'     => array(
+				'options'     => [
 					'auto'          => 'Auto detect',
 					'win'           => 'Windows (\r\n)',
 					'mac'           => 'Mac (\r)',
 					'nix'           => 'Linux (\n)',
 					'none'          => 'none',
-				),
+				],
 				'value'       => 'auto',
-			),
+			],
 
-			array(
-				'name'        => 'extensionsFilter',
-				'type'        => 'text',
-				'label'       => $this->_('Extensions filter'),
-				'description' => $this->_('Comma separated list of extensions to filter files by. Example: "php,module,js,css".'),
-				'columnWidth' => 25,
-				'required'    => true,
-				'value'       => 'php,module,js,css',
-			),
-
-			array(
-				'name'        => 'extFilter',
-				'type'        => 'select',
-				'label'       => $this->_('Include or exclude extensions'),
-				'description' => $this->_('Select to include or exclude files with the extensions defined above.'),
-				'columnWidth' => 25,
-				'required'    => true,
-				'options'     => array(
-					'0'             => $this->_('Include files with named extensions'),
-					'1'             => $this->_('Exclude files with named extensions'),
-				),
-				'value'       => '0',
-			),
-
-			array(
+			[
 				'name'        => 'dotFilesExclusion',
 				'type'        => 'checkbox',
 				'label'       => $this->_('Dotfiles exclusion'),
 				'description' => $this->_('Check to exclude files and folders starting with dot.'),
-				'columnWidth' => 25,
+				'columnWidth' => 33,
 				'required'    => false,
 				'value'       => '0',
-			),
+			],
 
-			array(
+			[
 				'name'        => 'backupExtension',
 				'type'        => 'text',
 				'label'       => $this->_('Backup extension'),
 				'description' => $this->_('Extension to use when backing up edited file. Leave empty for no backup.'),
-				'columnWidth' => 25,
+				'columnWidth' => 33,
 				'required'    => false,
 				'value'       => '',
-			),
+			],
 
-			array(
+			[
 				'name'        => 'editorHeight',
 				'type'        => 'text',
 				'label'       => $this->_('Editor height'),
 				'description' => $this->_('Set the height of the editor. Default is "auto", can be any height like "450px".'),
-				'columnWidth' => 25,
+				'columnWidth' => 34,
 				'required'    => false,
 				'value'       => 'auto',
-			),
+			],
 
-			array(
+			[
 				'name'        => 'lineWrapping',
 				'type'        => 'checkbox',
 				'label'       => $this->_('Editor Line Wrapping'),
 				'description' => $this->_('Make long lines wrap. Default is on.'),
-				'columnWidth' => 25,
+				'columnWidth' => 33,
 				'required'    => false,
 				'value'       => '1',
-			),
+			],
 
-			array(
+			[
 				'name'        => 'theme',
 				'type'        => 'select',
 				'label'       => $this->_('Codemirror theme'),
 				'description' => $this->_('Select the theme used for editor, see **[demo](https://codemirror.net/demo/theme.html)**.'),
-				'columnWidth' => 50,
+				'columnWidth' => 33,
 				'required'    => true,
-				'options'     => array(
+				'options'     => [
 					'default' => 'default',
 					'3024-day' => '3024-day',
 					'3024-night' => '3024-night',
@@ -237,11 +222,11 @@ class ProcessFileEditConfig extends ModuleConfig {
 					'yeti' => 'yeti',
 					'yonce' => 'yonce',
 					'zenburn' => 'zenburn',
-				),
+				],
 				'value'       => 'default',
-			),
+			],
 
-		));
+		]);
 	}
 
 }

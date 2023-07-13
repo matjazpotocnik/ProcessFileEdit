@@ -1,10 +1,10 @@
 # ProcessFileEdit
 
-Allow modal editing of files on the filesystem. The list of directories and files
-are displayed, clicking on file opens modal window with the codemirror editor. If
-the file is an image, the viewer is opened in modal. If the file is used as a 
-template, link to the template edit is provided. Intended primarily for superusers, 
-give other users file-edit permission.
+Module for ProcessWire CMS that allow modal editing of files on the filesystem. 
+The list of directories and files are displayed, clicking on file opens modal 
+window with the codemirror editor. If the file is an image, the viewer is opened 
+in modal. If the file is used as a template, link to the template edit is provided.
+Intended primarily for superusers, give other users file-edit permission. 
 
 This is not the replacement for a full-blown editor. Be aware that if you make
 changes to files that cause PW to throws an error in admin, you lose access to
@@ -15,13 +15,6 @@ this module too and you will need some other means to access the file again!
 ### Directory path
 The path to the directory from which to display directory tree. By default it's set 
 to $config->paths->site
-
-### File encoding
-The encoding used when saving file name. Different operating systems and underlying
-filesystem use different ways of how filenames are stored on the filesystem.
-This setting allows you to overcome situations when file name become garbled after
-save operation. Options are: 'Auto detect' (this is default), 'Windows-1250',
-'Windows-1252', 'ISO-8859-2', 'PHP\'s urldecode' and 'none'.
 
 ### Line endings
 Type of line endings to use when saving. CodeMirror returns end-of-line as
