@@ -192,7 +192,7 @@ class ProcessFileEdit extends Process {
 			//$this->setFuel('processHeadline', sprintf($this->_("Edit file: %s"), $file));
 			$this->setFuel('processHeadline', $this->_("Edit file"));
 
-			//$fileUTF8 = $this->toUTF8($displayFile, $this->encoding); //TODO: encoding not needed, remove UTF call
+			//$fileUTF8 = $this->toUTF8($displayFile, $this->encoding);
 			$fileHandle = @fopen($file, "r+");
 			if($fileHandle) {
 				$fileContent = ((filesize($file) > 0) ? fread($fileHandle, filesize($file)) : '');
@@ -226,39 +226,6 @@ class ProcessFileEdit extends Process {
 			];
 			$mode = 'text/plain';
 			if(array_key_exists($ext, $modes)) $mode = $modes[$ext];
-			bd($mode);
-			/*switch($ext) {
-				case 'php':
-				case 'module':
-				case 'inc':
-					$mode = 'application/x-httpd-php';
-					break;
-				case 'js':
-					$mode = 'text/javascript';
-					break;
-				case 'html':
-				case 'htm':
-				case 'latte':
-				case 'smarty':
-				case 'twig':
-					$mode = 'text/html';
-					break;
-				case 'css':
-					$mode = 'text/css';
-					break;
-				case 'sql':
-					$mode = 'text/x-mysql';
-					break;
-				case 'md':
-				case 'markdown':
-					$mode = 'text/x-markdown';
-					break;
-				case 'xml':
-					$mode = 'application/xml';
-					break;
-				default:
-					$mode = 'text/plain';
-			};*/
 
 			$config = $this->wire('config');
 			$codemirror = $config->urls->siteModules . $this . "/codemirror/";
