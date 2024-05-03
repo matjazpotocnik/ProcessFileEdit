@@ -5,7 +5,7 @@
  *
  * A module for editing files (in the admin area).
  *
- * @version 2.0.0
+ * @version 2.0.1
  * @author Florea Banus George
  * @author Matjaz Potocnik
  * @author Roland Toth

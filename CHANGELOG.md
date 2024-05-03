@@ -1,5 +1,8 @@
 # Changelog
 
+### 2.0.1 (2024-05-03)
+- CodeMirror update to 5.65.16
+
 ### 2.0.0 (2023-07-13)
 - dependency: module is namespaced, only for PW version 3
 - dependancy: PHP 7.1
