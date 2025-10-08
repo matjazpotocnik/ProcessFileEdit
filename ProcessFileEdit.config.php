@@ -64,7 +64,7 @@ class ProcessFileEditConfig extends ModuleConfig {
 				'columnWidth' => 34,
 				'required'    => true,
 				'options'     => self::getDirPathOptions($this->config->paths),
-				'value'       => rtrim($this->config->paths->site, '/'),
+				'value'       => rtrim($this->config->paths->templates, '/'),
 			],
 
 			[

@@ -1,5 +1,9 @@
 # Changelog
 
+### 2.0.2 (2025-10-08)
+- update CSS colors to support Konkaet theme
+- default path is now /site/templates, not /site
+
 ### 2.0.1 (2024-05-03)
 - CodeMirror update to 5.65.16
 

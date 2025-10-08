@@ -61,10 +61,10 @@ h1.uk-margin-remove-top {
 }
 
 .php-file-tree a {
-    color: #2f4248; /* neutral grey */
+    /*color: #2f4248;*/ /* neutral grey */
     text-decoration: none;
     display: block;
-    border-bottom: 1px solid #e4ecf0;
+    border-bottom: 1px solid #9e9e9e;
     padding: 7px 0;
     cursor: pointer;
 }
@@ -76,7 +76,7 @@ h1.uk-margin-remove-top {
 
 .php-file-tree .pft-d-open > a.active {
     opacity: 1;
-    color: #9e255d /*!important;*/
+    /*color: #9e255d*/ /*!important;*/
 }
 .php-file-tree .pft-d > a {
     color: inherit;
@@ -104,7 +104,7 @@ h1.uk-margin-remove-top {
     text-decoration: underline;
 }
 .php-file-tree li a:hover {
-    color: #db1174;
+    /*color: #db1174;*/
     background: rgba(0, 0, 0, 0.02);
 }
 .php-file-tree a:focus {
@@ -172,7 +172,7 @@ h1.uk-margin-remove-top {
 }
 .php-file-tree .pft-f span:hover {
     opacity: 1;
-    color: #db1174;
+    /*color: #db1174;*/
     text-decoration: underline;
 }
 .php-file-tree .pft-f span:before {
