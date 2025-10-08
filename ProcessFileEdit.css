@@ -32,7 +32,7 @@
 
 .modal .uk-margin-large-bottom {
     margin-bottom: 10px!important;
-    margin-top: 10px!important;    
+    margin-top: 10px!important;
 }
 
 h1.uk-margin-remove-top {
@@ -87,14 +87,15 @@ h1.uk-margin-remove-top {
     font-size: 13px;
     text-decoration: none;
     position: absolute;
-    color: rgba(0, 0, 0, .25);
+    /*color: rgba(0, 0, 0, .25);*/
     font-weight: bold;
     margin-left: 20px;
     margin-top: 1px;
     right: 6px;
 }
 .php-file-tree .pft-d a.active:after {
-    color: rgba(0, 0, 0, .4);
+    /*color: rgba(0, 0, 0, .4);*/
+    color: inherit;
 }
 
 .php-file-tree a[href] {
@@ -105,7 +106,7 @@ h1.uk-margin-remove-top {
 }
 .php-file-tree li a:hover {
     /*color: #db1174;*/
-    background: rgba(0, 0, 0, 0.02);
+    /*background: rgba(0, 0, 0, 0.02);*/
 }
 .php-file-tree a:focus {
     outline: 0;
@@ -219,5 +220,5 @@ h1.uk-margin-remove-top {
 }
 
 .CodeMirror-lines {
-  padding: 0 !important;
+    padding: 0 !important;
 }
