@@ -2,26 +2,30 @@
 
 /**
  * File Editor settings
- *
  */
 class ProcessFileEditConfig extends ModuleConfig {
 
 
-	/**
-	 * Recursive function to extend starting directory selection to include template subdirs
-	 *
-	 * @param string $path starting directory
-	 * @param array $options
-	 *
-	 */
+/**
+ * Recursively scans a directory for subdirectories and adds them to the provided options array.
+ * Only directories whose names do not start with a dot (.) are included.
+ * The resulting array will contain full directory paths as both keys and values.
+ *
+ * @param string $path Absolute or relative base path to scan
+ * @param array<string,string> &$options Output array populated with discovered subdirectory paths
+ *
+ * @return void
+ */
 	protected static function scanForSubdirs($path, &$options) {
-		// Ignore ./, ../ and .<folder>/ paths...
-		$files = array_diff(@scandir($path), ['.', '..']);
-		foreach($files as $file) {
-			$f = "$path$file";
-			if(is_dir($f) && (strpos($file, '.') !== 0)) {
-				$options[$f] = $f;
-				self::scanForSubdirs($f . '/', $options);
+		$iterator = new \RecursiveIteratorIterator(
+			new \RecursiveDirectoryIterator($path, \RecursiveDirectoryIterator::SKIP_DOTS),
+			\RecursiveIteratorIterator::SELF_FIRST
+		);
+
+		foreach ($iterator as $item) {
+			if ($item->isDir() && strpos($item->getFilename(), '.') !== 0) {
+				$fullPath = $item->getPathname();
+				$options[$fullPath] = $fullPath;
 			}
 		}
 	}
@@ -31,7 +35,6 @@ class ProcessFileEditConfig extends ModuleConfig {
 	 *
 	 * @param string $paths
 	 * @return array $options
-	 *
 	 */
 	protected static function getDirPathOptions($paths) {
 		// predefined paths
@@ -115,7 +118,7 @@ class ProcessFileEditConfig extends ModuleConfig {
 				'description' => $this->_('Check to exclude files and folders starting with dot.'),
 				'columnWidth' => 33,
 				'required'    => false,
-				'value'       => '0',
+				'value'       => 0,
 			],
 
 			[
@@ -145,7 +148,7 @@ class ProcessFileEditConfig extends ModuleConfig {
 				'description' => $this->_('Make long lines wrap. Default is on.'),
 				'columnWidth' => 33,
 				'required'    => false,
-				'value'       => '1',
+				'value'       => 1,
 			],
 
 			[

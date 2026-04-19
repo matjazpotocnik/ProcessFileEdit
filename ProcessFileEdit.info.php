@@ -1,13 +1,13 @@
 <?php namespace ProcessWire;
 
-$info = array(
+$info = [
 	'title' => 'Files Editor',
 	'summary' => _('Edit files'),
-	'version' => '2.0.2',
+	'version' => '2.0.3',
 	'author' => 'Florea Banus George, Matja&#382; Poto&#269;nik, Roland Toth',
 	'icon' => 'pencil-square-o',
 	'href' => 'https://github.com/matjazpotocnik/ProcessFileEdit/',
-	'requires' => 'ProcessWire>=3.0.0, PHP>=7.1.0',
+	'requires' => 'ProcessWire>=3.0.0, PHP>=8.1.0',
 	'permission' => 'file-editor',
 	'permissions' => [
 		'file-editor' => _('Edit Files (recommended for superuser only)')
@@ -15,6 +15,6 @@ $info = array(
 	'page' => [
 		'name' => 'file-editor',
 		'parent' => 'setup',
-		'title' => 'Files Editor'
+		'title' => 'Files Editor',
 	],
-);
+];

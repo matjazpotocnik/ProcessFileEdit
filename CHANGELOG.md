@@ -1,7 +1,13 @@
 # Changelog
 
+### 2.0.3 (2026-04-19)
+- CodeMirror update to 5.65.21
+- code improvements and minor fixes
+- logging to file
+- dependency: PHP 8.1
+
 ### 2.0.2 (2025-10-08)
-- update CSS colors to support Konkaet theme
+- update CSS colors to support Konkat theme
 - default path is now /site/templates, not /site
 
 ### 2.0.1 (2024-05-03)
@@ -9,7 +15,7 @@
 
 ### 2.0.0 (2023-07-13)
 - dependency: module is namespaced, only for PW version 3
-- dependancy: PHP 7.1
+- dependency: PHP 7.1
 
 ### 1.7.7 (2023-07-12)
 - CodeMirror update to 5.65.13

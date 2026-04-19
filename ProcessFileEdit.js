@@ -1,4 +1,4 @@
-/*jslint this:true */
+ /*jslint this:true */
 /*jslint browser:true */
 /*jslint for:true */
 /*global
@@ -12,11 +12,11 @@ $(document).ready(function () {
         var matchingLink = $(".php-file-tree .pft-d > a[data-p='" + location.hash.substring(1) + "'");
 
         matchingLink.parents(".pft-d").addClass("pft-d-open");
-        matchingLink.attr("tabIndex", "1").addClass("active").focus(); // bring into view
+        matchingLink.attr("tabIndex", "1").addClass("active").trigger("focus"); // bring into view
     }
 
     // Expand/collapse on click
-    $(".pft-d a").click(function (e) {
+    $(".pft-d a").on("click", function (e) {
 
         var parent = $(this).parent();
         e.preventDefault();
@@ -84,8 +84,8 @@ $(document).ready(function () {
             } else if ($t.hasClass("pw-head-button") || $t.hasClass("head_button_clone") || $t.hasClass("head-button")) {
                 $button = $t.clone(true);
                 $button.attr("data-from_id", $t.attr("id")).attr("id", $t.attr("id") + "_copy");
-                $button.click(function () {
-                    $("#" + $(this).attr("data-from_id")).click();
+                $button.on("click", function () {
+                    $("#" + $(this).attr("data-from_id")).trigger("click");
                     return false;
                 });
                 $head.prepend($button);
@@ -94,50 +94,58 @@ $(document).ready(function () {
         $head.show();
     }
 
-    // there is no head_button in modal view, so create it
-    setupCloneButton1();
-
     var saveButton = $("#saveFile");
     var isChanged = $("#change");
     var closeBtn = parent.$(".ui-dialog-titlebar-close");
+    var hasEditableEditor = saveButton.length > 0 && isChanged.length > 0;
 
-    saveButton.on("click", function (e) {
-        e.preventDefault();
-        window.editor.save();
+    if (hasEditableEditor) {
+        // there is no head_button in modal view, so create it
+        setupCloneButton1();
 
-        $.ajax({
-            url: saveButton.data("url"),
-            data: $("#editForm").serializeArray(),
-            type: "POST",
-            success: function (data) {
-                if (data === "") {
-                    isChanged.html("");
-                    $("#saveFile").addClass("ui-state-disabled");
-                    $("#saveFile_copy").addClass("ui-state-disabled");
-                } else {
-                    window.alert(data);
+        saveButton.on("click", function (e) {
+            e.preventDefault();
+            window.editor.save();
+
+            $.ajax({
+                url: saveButton.data("url"),
+                data: $("#editForm").serializeArray(),
+                type: "POST",
+                success: function (data) {
+                    // data=status#message
+                    var status = '0';
+                    var msg = data;
+                    var hashPos = data.indexOf("#");
+                    if (hashPos !== -1) {
+                        status = data.slice(0, hashPos);
+                        msg = data.slice(hashPos + 1);
+                    }
+                    if (status === "0" || status === "1" || msg === "") {
+                        // succsess
+                        isChanged.html("");
+                        $("#saveFile").addClass("ui-state-disabled");
+                        $("#saveFile_copy").addClass("ui-state-disabled");
+                    }
+                    if (status === "1") {
+                        // warning
+                        window.alert(msg);
+                    }
+                    if (status === "2") {
+                        // error
+                        window.alert(msg);
+                    }
+                    return false;
+                },
+                error: function (xhr, textStatus) {
+                    window.alert("Ajax request failed: " + textStatus);
+                    return false;
                 }
-                return false;
-            },
-            error: function (xhr, textStatus) {
-                window.alert("Ajax request failed: " + textStatus);
-                return false;
-            }
+            });
+
+            return false;
         });
-
-        return false;
-    });
-
-    /*
-     $(document).on("keydown", function (e) {
-     e = e || window.event;
-     var closeBtnCurrent = parent.$(".ui-dialog-titlebar-close");
-     if (e.keyCode === 27 && closeBtnCurrent.length) {
-     closeBtnCurrent.trigger("mousedown");
-     }
-     });
-    */
-
+    };
+    
     closeBtn.on("mousedown", function (e) {
         if (isChanged.html() !== "") {
             var confirm = window.confirm("File is not saved. Continue?");
@@ -146,11 +154,11 @@ $(document).ready(function () {
                 return false;
             }
             isChanged.html("");
-            closeBtn.click();
+            closeBtn.trigger('click');
         }
     });
 
-    //if (!!$.prototype.magnificPopup) {
+    //if (typeof $.fn.magnificPopup === "function"
     if ($.prototype.magnificPopup) {
         var magnificOptions = {
             closeOnContentClick: true,
