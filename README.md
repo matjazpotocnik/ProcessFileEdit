@@ -1,64 +1,94 @@
 # ProcessFileEdit
 
-Module for ProcessWire CMS that allow modal editing of files on the filesystem. 
-The list of directories and files are displayed, clicking on file opens modal 
-window with the codemirror editor. If the file is an image, the viewer is opened 
-in modal. If the file is used as a template, link to the template edit is provided.
-Intended primarily for superusers, give other users file-edit permission. 
+Module for the ProcessWire CMS that allows modal editing of files on the filesystem.  
+The list of directories and files is displayed; clicking on a file opens a modal
+window with the CodeMirror editor. If the file is an image, the viewer is opened
+in a modal window. If the file is used as a template, a link to the template edit
+page is provided.
 
-This is not the replacement for a full-blown editor. Be aware that if you make
-changes to files that cause PW to throws an error in admin, you lose access to
-this module too and you will need some other means to access the file again!
+This module is intended primarily for superusers, but you may give other users
+file‑editing permission.
+
+This is **not a replacement for a full‑blown editor**. Be aware that if you make
+changes to files that cause ProcessWire to throw an error in the admin, you will
+lose access to this module as well and will need some other way to access and
+fix the file.
+
+---
 
 ## Options
 
 ### Directory path
-The path to the directory from which to display directory tree. By default it's set 
-to $config->paths->site
+The path to the directory from which the directory tree is displayed. By default,
+it is set to `$config->paths->site`.
 
 ### Line endings
-Type of line endings to use when saving. CodeMirror returns end-of-line as
-Windows style end-of-line (\r\n). Here you can set up how to handle this. Default is
-'Auto detect' that try to detect original line endings and apply them on save. You
-may manually set line endings to Windows (\r\n), Linux (\n) or Mac (\r) style. 
+The type of line endings to use when saving files. CodeMirror returns end‑of‑line
+characters as Windows‑style line endings (`\r\n`). Here you can configure how
+these are handled.
+
+The default is **Auto detect**, which tries to detect the original line endings
+and apply them on save. You may also manually set line endings to Windows (`\r\n`),
+Linux (`\n`), or Mac (`\r`) style.
 
 ### Extensions filter
-Comma separated list of extensions to filter files by. By default "php,module,js,css".
+A comma‑separated list of extensions to filter files by. The default is
+`php,module,js,css`.
 
 ### Include or exclude extensions
-Select to include or exclude files based on the extensions defined in Extension
-Filter. Include is the default, so files matching extensions will be displayed in
-directory/file tree.
+Choose whether to include or exclude files based on the extensions defined in
+the Extensions Filter. **Include** is the default, meaning that files matching
+the configured extensions will be displayed in the directory/file tree.
 
 ### Backup extension
-Extension to use when backing up edited file, for example ".bak" ("." is prepended if
-omitted). Leave empty for no backup (this is default).
+The extension to use when backing up an edited file, for example `.bak`
+(`.` is automatically prepended if omitted). Leave empty to disable backups
+(this is the default).
 
 ### Dotfiles exclusion
-Check to exclude files and folders starting with a dot (.) like .gitignore, .htaccess etc.
-The default is unchecked. This option also hides the old versions of site modules that were
-created by Ryan's Upgrades module showing up when browsing /site/modules. You can add 
-"htaccess" and other extensions to the extensions filter to allow those.
+Check this option to exclude files and folders starting with a dot (`.`), such as
+`.gitignore`, `.htaccess`, etc. The default is unchecked.
+
+This option also hides old versions of site modules created by Ryan’s *Upgrades*
+module when browsing `/site/modules`. You can add `htaccess` or other extensions
+to the Extensions Filter to allow those files.
 
 ### Editor height
-The height of the editor textarea, the default is "auto", can be any height like "450px".
+The height of the editor textarea. The default is `auto`, but you can specify a
+fixed height such as `450px`.
 
 ### Line wrapping
-Make long lines in the editor wrap. Default is on.
+Wrap long lines in the editor. Enabled by default.
 
-### Codemirror theme
-List of themes supported by CodeMirror, see **[demo](https://codemirror.net/demo/theme.html)**. 
-The default theme is "default". 
+### CodeMirror theme
+A list of themes supported by CodeMirror. See the
+[demo](https://codemirror.net/demo/theme.html) for available themes.
+The default theme is `default`.
+
+---
 
 ## Installation
-Copy the files to the /site/modules/ProcessFileEdit folder, log in to your ProcessWire
-admin and go to the Modules page. Click the Refresh button and then Install. More info
-at http://modules.processwire.com/install-uninstall/
+
+Copy the files to `/site/modules/ProcessFileEdit`, log in to your ProcessWire
+admin, and go to the **Modules** page. Click the **Refresh** button and then
+**Install**.
+
+More information:
+<http://modules.processwire.com/install-uninstall/>
+
+---
 
 ## License
-Copyright (c) 2016 Florea Banus George (https://github.com/f-b-g-m/ProcessFileEdit).  
-Fork by Matja&#382; Poto&#269;nik (https://github.com/matjazpotocnik/ProcessFileEdit).  
-Big thanks to Roland Toth.  
-Support forum: https://processwire.com/talk/topic/14276-file-editor/
+
+Copyright (c) 2016 Florea Banus George  
+<https://github.com/f-b-g-m/ProcessFileEdit>
+
+Fork by Matjaž Potočnik  
+<https://github.com/matjazpotocnik/ProcessFileEdit>
+
+Big thanks to Roland Toth.
+
+Support forum:  
+<https://processwire.com/talk/topic/14276-file-editor/>
 
 Licensed under the MIT license. See the LICENSE file for details.
